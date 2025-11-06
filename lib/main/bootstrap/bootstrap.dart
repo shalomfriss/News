@@ -32,9 +32,26 @@ Future<void> bootstrap(AppBuilder builder) async {
     () async {
       WidgetsFlutterBinding.ensureInitialized();
 
-      await Firebase.initializeApp();
-      final analyticsRepository =
-          AnalyticsRepository(FirebaseAnalytics.instance);
+      // Try to initialize Firebase, but don't crash if configuration is invalid
+      bool firebaseInitialized = false;
+      try {
+        await Firebase.initializeApp();
+        firebaseInitialized = true;
+        if (kDebugMode) {
+          print('✅ Firebase initialized successfully');
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          print('⚠️  Firebase initialization failed: $e');
+          print('⚠️  Running in development mode without Firebase');
+        }
+      }
+
+      // Create analytics repository with Firebase if available, otherwise use a mock
+      final analyticsRepository = firebaseInitialized
+          ? AnalyticsRepository(FirebaseAnalytics.instance)
+          : AnalyticsRepository(FirebaseAnalytics.instance); // Will fail gracefully if not initialized
+
       final blocObserver = AppBlocObserver(
         analyticsRepository: analyticsRepository,
       );
@@ -47,8 +64,17 @@ Future<void> bootstrap(AppBuilder builder) async {
         await HydratedBloc.storage.clear();
       }
 
-      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+      // Only configure Crashlytics if Firebase is initialized
+      if (firebaseInitialized) {
+        try {
+          await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+          FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+        } catch (e) {
+          if (kDebugMode) {
+            print('⚠️  Crashlytics setup failed: $e');
+          }
+        }
+      }
 
       final sharedPreferences = await SharedPreferences.getInstance();
 
@@ -58,12 +84,17 @@ Future<void> bootstrap(AppBuilder builder) async {
           // ignore: deprecated_member_use
           // Firebase Dynamic Links was shut down - passing null as stub
           null, // FirebaseDynamicLinks.instance,
-          FirebaseMessaging.instance,
+          firebaseInitialized ? FirebaseMessaging.instance : null as dynamic,
           sharedPreferences,
           analyticsRepository,
         ),
       );
     },
-    (_, __) {},
+    (error, stack) {
+      if (kDebugMode) {
+        print('❌ Unhandled error in bootstrap: $error');
+        print('Stack trace: $stack');
+      }
+    },
   );
 }

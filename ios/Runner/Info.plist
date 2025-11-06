@@ -63,6 +63,10 @@
 	<string>$(FACEBOOK_DISPLAY_NAME)</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
+	<key>FirebaseAutomaticDataCollectionEnabled</key>
+	<false/>
+	<key>FirebaseCrashlyticsCollectionEnabled</key>
+	<false/>
 	<key>FirebaseDynamicLinksCustomDomains</key>
 	<array>
 		<string>https://$(FLAVOR_DEEP_LINK_DOMAIN)/email_login</string>
