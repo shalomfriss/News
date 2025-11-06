@@ -1,0 +1,8 @@
+import 'arb/app_localizations.dart';
+import 'package:flutter/widgets.dart';
+
+export 'arb/app_localizations.dart';
+
+extension AppLocalizationsX on BuildContext {
+  AppLocalizations get l10n => AppLocalizations.of(this);
+}
