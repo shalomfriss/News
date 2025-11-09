@@ -7,7 +7,13 @@ import 'package:news_blocks_ui/news_blocks_ui.dart';
 /// {@endtemplate}
 class PostMedium extends StatelessWidget {
   /// {@macro post_medium}
-  const PostMedium({required this.block, this.onPressed, super.key});
+  const PostMedium({
+    required this.block,
+    this.onPressed,
+    this.onSummary,
+    this.onFactCheck,
+    super.key,
+  });
 
   /// The associated [PostMediumBlock] instance.
   final PostMediumBlock block;
@@ -15,6 +21,12 @@ class PostMedium extends StatelessWidget {
   /// An optional callback which is invoked when the action is triggered.
   /// A [Uri] from the associated [BlockAction] is provided to the callback.
   final BlockActionCallback? onPressed;
+
+  /// Called when the summary button is tapped.
+  final VoidCallback? onSummary;
+
+  /// Called when the fact check button is tapped.
+  final VoidCallback? onFactCheck;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +44,8 @@ class PostMedium extends StatelessWidget {
               description: block.description,
               publishedAt: block.publishedAt,
               author: block.author,
+              onSummary: onSummary,
+              onFactCheck: onFactCheck,
             ),
     );
   }

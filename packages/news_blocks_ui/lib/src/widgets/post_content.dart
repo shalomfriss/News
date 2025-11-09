@@ -14,6 +14,8 @@ class PostContent extends StatelessWidget {
     this.description,
     this.author,
     this.onShare,
+    this.onSummary,
+    this.onFactCheck,
     this.isPremium = false,
     this.isContentOverlaid = false,
     this.isVideoContent = false,
@@ -38,6 +40,12 @@ class PostContent extends StatelessWidget {
 
   /// Called when the share button is tapped.
   final VoidCallback? onShare;
+
+  /// Called when the summary button is tapped.
+  final VoidCallback? onSummary;
+
+  /// Called when the fact check button is tapped.
+  final VoidCallback? onFactCheck;
 
   /// Whether this post requires a premium subscription to access.
   ///
@@ -99,12 +107,14 @@ class PostContent extends StatelessWidget {
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
           ),
-          if (publishedAt != null || author != null || onShare != null) ...[
+          if (publishedAt != null || author != null || onShare != null || onSummary != null || onFactCheck != null) ...[
             const SizedBox(height: AppSpacing.md),
             PostFooter(
               publishedAt: publishedAt,
               author: author,
               onShare: onShare,
+              onSummary: onSummary,
+              onFactCheck: onFactCheck,
               isContentOverlaid: isContentOverlaid,
             ),
           ],

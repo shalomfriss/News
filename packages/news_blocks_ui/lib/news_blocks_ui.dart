@@ -21,4 +21,9 @@ export 'src/trending_story.dart';
 export 'src/video.dart';
 export 'src/video_introduction.dart';
 export 'src/widgets/widgets.dart'
-    show AdsRetryPolicy, BannerAdContent, ShareButton;
+    show
+        AdsRetryPolicy,
+        BannerAdContent,
+        FactCheckModal,
+        ShareButton,
+        SummaryModal;

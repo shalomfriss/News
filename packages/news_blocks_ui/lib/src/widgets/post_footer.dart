@@ -11,6 +11,8 @@ class PostFooter extends StatelessWidget {
     this.publishedAt,
     this.author,
     this.onShare,
+    this.onSummary,
+    this.onFactCheck,
     this.isContentOverlaid = false,
   });
 
@@ -22,6 +24,12 @@ class PostFooter extends StatelessWidget {
 
   /// Called when the share button is tapped.
   final VoidCallback? onShare;
+
+  /// Called when the summary button is tapped.
+  final VoidCallback? onSummary;
+
+  /// Called when the fact check button is tapped.
+  final VoidCallback? onFactCheck;
 
   /// Whether footer is displayed in reversed color theme.
   ///
@@ -37,36 +45,69 @@ class PostFooter extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        RichText(
-          text: TextSpan(
-            style: textTheme.bodySmall?.copyWith(color: textColor),
-            children: <InlineSpan>[
-              if (author != null)
-                TextSpan(
-                  text: author,
-                ),
-              if (author != null && publishedAt != null) ...[
-                const WidgetSpan(child: SizedBox(width: AppSpacing.sm)),
-                const TextSpan(
-                  text: '•',
-                ),
-                const WidgetSpan(child: SizedBox(width: AppSpacing.sm)),
+        Expanded(
+          child: RichText(
+            text: TextSpan(
+              style: textTheme.bodySmall?.copyWith(color: textColor),
+              children: <InlineSpan>[
+                if (author != null)
+                  TextSpan(
+                    text: author,
+                  ),
+                if (author != null && publishedAt != null) ...[
+                  const WidgetSpan(child: SizedBox(width: AppSpacing.sm)),
+                  const TextSpan(
+                    text: '•',
+                  ),
+                  const WidgetSpan(child: SizedBox(width: AppSpacing.sm)),
+                ],
+                if (publishedAt != null)
+                  TextSpan(
+                    text: publishedAt!.mDY,
+                  ),
               ],
-              if (publishedAt != null)
-                TextSpan(
-                  text: publishedAt!.mDY,
-                ),
-            ],
+            ),
           ),
         ),
-        if (onShare != null)
-          IconButton(
-            icon: Icon(
-              Icons.share,
-              color: textColor,
-            ),
-            onPressed: onShare,
-          ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (onSummary != null)
+              IconButton(
+                icon: Icon(
+                  Icons.summarize,
+                  color: textColor,
+                  size: 20,
+                ),
+                iconSize: 20,
+                padding: const EdgeInsets.all(8),
+                constraints: const BoxConstraints(),
+                onPressed: onSummary,
+                tooltip: 'Summary',
+              ),
+            if (onFactCheck != null)
+              IconButton(
+                icon: Icon(
+                  Icons.fact_check,
+                  color: textColor,
+                  size: 20,
+                ),
+                iconSize: 20,
+                padding: const EdgeInsets.all(8),
+                constraints: const BoxConstraints(),
+                onPressed: onFactCheck,
+                tooltip: 'Fact Check',
+              ),
+            if (onShare != null)
+              IconButton(
+                icon: Icon(
+                  Icons.share,
+                  color: textColor,
+                ),
+                onPressed: onShare,
+              ),
+          ],
+        ),
       ],
     );
   }

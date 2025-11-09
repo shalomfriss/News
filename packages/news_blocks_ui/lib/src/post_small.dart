@@ -10,7 +10,13 @@ import 'package:news_blocks_ui/src/widgets/widgets.dart';
 /// {@endtemplate}
 class PostSmall extends StatelessWidget {
   /// {@macro post_small}
-  const PostSmall({required this.block, this.onPressed, super.key});
+  const PostSmall({
+    required this.block,
+    this.onPressed,
+    this.onSummary,
+    this.onFactCheck,
+    super.key,
+  });
 
   /// The size of this post image.
   static const _imageSize = 80.0;
@@ -21,6 +27,12 @@ class PostSmall extends StatelessWidget {
   /// An optional callback which is invoked when the action is triggered.
   /// A [Uri] from the associated [BlockAction] is provided to the callback.
   final BlockActionCallback? onPressed;
+
+  /// Called when the summary button is tapped.
+  final VoidCallback? onSummary;
+
+  /// Called when the fact check button is tapped.
+  final VoidCallback? onFactCheck;
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +61,8 @@ class PostSmall extends StatelessWidget {
               child: PostSmallContent(
                 title: block.title,
                 publishedAt: block.publishedAt,
+                onSummary: onSummary,
+                onFactCheck: onFactCheck,
               ),
             ),
           ],
@@ -67,6 +81,8 @@ class PostSmallContent extends StatelessWidget {
   const PostSmallContent({
     required this.title,
     required this.publishedAt,
+    this.onSummary,
+    this.onFactCheck,
     super.key,
   });
 
@@ -75,6 +91,12 @@ class PostSmallContent extends StatelessWidget {
 
   /// The date when this post was published.
   final DateTime publishedAt;
+
+  /// Called when the summary button is tapped.
+  final VoidCallback? onSummary;
+
+  /// Called when the fact check button is tapped.
+  final VoidCallback? onFactCheck;
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +113,8 @@ class PostSmallContent extends StatelessWidget {
         const SizedBox(height: AppSpacing.xs),
         PostFooter(
           publishedAt: publishedAt,
+          onSummary: onSummary,
+          onFactCheck: onFactCheck,
         ),
       ],
     );

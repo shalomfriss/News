@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart' hide Spacer;
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:app_ui/app_ui.dart' show showAppModal;
 import 'package:demo_news/app/app.dart';
 import 'package:demo_news/article/article.dart';
 import 'package:demo_news/categories/categories.dart';
@@ -38,16 +40,22 @@ class CategoryFeedItem extends StatelessWidget {
         premiumText: context.l10n.newsBlockPremiumText,
         isLocked: newsBlock.isPremium && !isUserSubscribed,
         onPressed: (action) => _onFeedItemAction(context, action),
+        onSummary: () => _showSummaryModal(context, newsBlock.title),
+        onFactCheck: () => _showFactCheckModal(context, newsBlock.title),
       );
     } else if (newsBlock is PostMediumBlock) {
       widget = PostMedium(
         block: newsBlock,
         onPressed: (action) => _onFeedItemAction(context, action),
+        onSummary: () => _showSummaryModal(context, newsBlock.title),
+        onFactCheck: () => _showFactCheckModal(context, newsBlock.title),
       );
     } else if (newsBlock is PostSmallBlock) {
       widget = PostSmall(
         block: newsBlock,
         onPressed: (action) => _onFeedItemAction(context, action),
+        onSummary: () => _showSummaryModal(context, newsBlock.title),
+        onFactCheck: () => _showFactCheckModal(context, newsBlock.title),
       );
     } else if (newsBlock is PostGridGroupBlock) {
       widget = PostGrid(
@@ -90,5 +98,56 @@ class CategoryFeedItem extends StatelessWidget {
           .read<CategoriesBloc>()
           .add(CategorySelected(category: action.category));
     }
+  }
+
+  /// Shows a modal with article summary.
+  void _showSummaryModal(BuildContext context, String title) {
+    showAppModal<void>(
+      context: context,
+      builder: (context) => SummaryModal(
+        title: title,
+        summary: _generateSummary(title),
+      ),
+    );
+  }
+
+  /// Shows a modal with article fact check.
+  void _showFactCheckModal(BuildContext context, String title) {
+    showAppModal<void>(
+      context: context,
+      builder: (context) => FactCheckModal(
+        title: title,
+        factCheck: _generateFactCheck(title),
+      ),
+    );
+  }
+
+  /// Generates a summary for the article.
+  /// To-Do: Replace with actual AI-generated summary.
+  String _generateSummary(String title) {
+    return 'This is a placeholder summary for the article titled "$title".\n\n'
+        'Key points:\n'
+        '• Main topic and context of the story\n'
+        '• Important facts and figures\n'
+        '• Key people or organizations involved\n'
+        '• Implications and significance\n\n'
+        'Note: This is a demo implementation. Replace this method with\n'
+        'actual API calls to generate summaries using AI services.';
+  }
+
+  /// Generates a fact check for the article.
+  /// To-Do: Replace with actual AI-generated fact check.
+  String _generateFactCheck(String title) {
+    return 'This is a placeholder fact check for the article titled "$title".\n\n'
+        'Fact-checked claims:\n'
+        '✓ Claim 1: Verified and accurate\n'
+        '✓ Claim 2: Verified with reliable sources\n'
+        '⚠ Claim 3: Partially accurate, requires context\n\n'
+        'Sources consulted:\n'
+        '• Primary source documents\n'
+        '• Expert verification\n'
+        '• Historical records\n\n'
+        'Note: This is a demo implementation. Replace this method with\n'
+        'actual API calls to perform fact-checking using AI services.';
   }
 }

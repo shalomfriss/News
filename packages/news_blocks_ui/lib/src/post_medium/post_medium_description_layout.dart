@@ -14,6 +14,8 @@ class PostMediumDescriptionLayout extends StatelessWidget {
     this.description,
     this.author,
     this.onShare,
+    this.onSummary,
+    this.onFactCheck,
     super.key,
   });
 
@@ -31,6 +33,12 @@ class PostMediumDescriptionLayout extends StatelessWidget {
 
   /// Called when the share button is tapped.
   final VoidCallback? onShare;
+
+  /// Called when the summary button is tapped.
+  final VoidCallback? onSummary;
+
+  /// Called when the fact check button is tapped.
+  final VoidCallback? onFactCheck;
 
   /// The url of this post image.
   final String imageUrl;
@@ -69,6 +77,8 @@ class PostMediumDescriptionLayout extends StatelessWidget {
             publishedAt: publishedAt,
             author: author,
             onShare: onShare,
+            onSummary: onSummary,
+            onFactCheck: onFactCheck,
           ),
         ],
       ),

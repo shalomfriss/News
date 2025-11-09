@@ -14,6 +14,8 @@ class PostLarge extends StatelessWidget {
     required this.premiumText,
     required this.isLocked,
     this.onPressed,
+    this.onSummary,
+    this.onFactCheck,
     super.key,
   });
 
@@ -29,6 +31,12 @@ class PostLarge extends StatelessWidget {
   /// An optional callback which is invoked when the action is triggered.
   /// A [Uri] from the associated [BlockAction] is provided to the callback.
   final BlockActionCallback? onPressed;
+
+  /// Called when the summary button is tapped.
+  final VoidCallback? onSummary;
+
+  /// Called when the fact check button is tapped.
+  final VoidCallback? onFactCheck;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +59,8 @@ class PostLarge extends StatelessWidget {
             isPremium: block.isPremium,
             premiumText: premiumText,
             isContentOverlaid: block.isContentOverlaid,
+            onSummary: onSummary,
+            onFactCheck: onFactCheck,
           ),
         ],
       ),
