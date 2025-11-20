@@ -1,16 +1,17 @@
 import 'package:ads_consent_client/ads_consent_client.dart';
 import 'package:analytics_repository/analytics_repository.dart';
 import 'package:app_ui/app_ui.dart';
+import 'package:appwrite/appwrite.dart';
 import 'package:article_repository/article_repository.dart';
-import 'package:flow_builder/flow_builder.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:demo_news/ads/ads.dart';
 import 'package:demo_news/analytics/analytics.dart';
 import 'package:demo_news/app/app.dart';
 import 'package:demo_news/l10n/l10n.dart';
 import 'package:demo_news/login/login.dart' hide LoginEvent;
 import 'package:demo_news/theme_selector/theme_selector.dart';
+import 'package:flow_builder/flow_builder.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart' as ads;
 import 'package:in_app_purchase_repository/in_app_purchase_repository.dart';
 import 'package:news_blocks_ui/news_blocks_ui.dart';
@@ -19,7 +20,7 @@ import 'package:notifications_repository/notifications_repository.dart';
 import 'package:platform/platform.dart';
 import 'package:user_repository/user_repository.dart';
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({
     required UserRepository userRepository,
     required NewsRepository newsRepository,
@@ -29,6 +30,7 @@ class App extends StatelessWidget {
     required AnalyticsRepository analyticsRepository,
     required AdsConsentClient adsConsentClient,
     required User user,
+    required this.account,
     super.key,
   })  : _userRepository = userRepository,
         _newsRepository = newsRepository,
@@ -47,39 +49,45 @@ class App extends StatelessWidget {
   final AnalyticsRepository _analyticsRepository;
   final AdsConsentClient _adsConsentClient;
   final User _user;
+  final Account account;
 
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider.value(value: _userRepository),
-        RepositoryProvider.value(value: _newsRepository),
-        RepositoryProvider.value(value: _notificationsRepository),
-        RepositoryProvider.value(value: _articleRepository),
-        RepositoryProvider.value(value: _analyticsRepository),
-        RepositoryProvider.value(value: _inAppPurchaseRepository),
-        RepositoryProvider.value(value: _adsConsentClient),
+        RepositoryProvider.value(value: widget._userRepository),
+        RepositoryProvider.value(value: widget._newsRepository),
+        RepositoryProvider.value(value: widget._notificationsRepository),
+        RepositoryProvider.value(value: widget._articleRepository),
+        RepositoryProvider.value(value: widget._analyticsRepository),
+        RepositoryProvider.value(value: widget._inAppPurchaseRepository),
+        RepositoryProvider.value(value: widget._adsConsentClient),
       ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
             create: (_) => AppBloc(
-              userRepository: _userRepository,
-              notificationsRepository: _notificationsRepository,
-              user: _user,
+              userRepository: widget._userRepository,
+              notificationsRepository: widget._notificationsRepository,
+              user: widget._user,
             )..add(const AppOpened()),
           ),
           BlocProvider(create: (_) => ThemeModeBloc()),
           BlocProvider(
             create: (_) => LoginWithEmailLinkBloc(
-              userRepository: _userRepository,
+              userRepository: widget._userRepository,
             ),
             lazy: false,
           ),
           BlocProvider(
             create: (context) => AnalyticsBloc(
-              analyticsRepository: _analyticsRepository,
-              userRepository: _userRepository,
+              analyticsRepository: widget._analyticsRepository,
+              userRepository: widget._userRepository,
             ),
             lazy: false,
           ),

@@ -17,6 +17,8 @@ import 'package:persistent_storage/persistent_storage.dart';
 import 'package:purchase_client/purchase_client.dart';
 import 'package:token_storage/token_storage.dart';
 import 'package:user_repository/user_repository.dart';
+import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/models.dart' as models;
 
 void main() {
   bootstrap(
@@ -92,6 +94,11 @@ void main() {
 
       final adsConsentClient = AdsConsentClient();
 
+      Client client = Client()
+          .setEndpoint("https://sfo.cloud.appwrite.io/v1")
+          .setProject("6911690b003198add805");
+      Account account = Account(client);
+
       return App(
         userRepository: userRepository,
         newsRepository: newsRepository,
@@ -101,6 +108,7 @@ void main() {
         inAppPurchaseRepository: inAppPurchaseRepository,
         adsConsentClient: adsConsentClient,
         user: await userRepository.user.first,
+        account: account,
       );
     },
   );
