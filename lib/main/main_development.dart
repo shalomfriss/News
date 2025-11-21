@@ -1,7 +1,7 @@
 import 'package:ads_consent_client/ads_consent_client.dart';
+import 'package:appwrite_authentication_client/appwrite_authentication_client.dart';
 import 'package:article_repository/article_repository.dart';
 import 'package:deep_link_client/deep_link_client.dart';
-import 'package:firebase_authentication_client/firebase_authentication_client.dart';
 import 'package:firebase_deep_link_client/firebase_deep_link_client.dart';
 import 'package:firebase_notifications_client/firebase_notifications_client.dart';
 import 'package:demo_news/app/app.dart';
@@ -18,7 +18,6 @@ import 'package:purchase_client/purchase_client.dart';
 import 'package:token_storage/token_storage.dart';
 import 'package:user_repository/user_repository.dart';
 import 'package:appwrite/appwrite.dart';
-import 'package:appwrite/models.dart' as models;
 
 void main() {
   bootstrap(
@@ -54,8 +53,10 @@ void main() {
 
       final userStorage = UserStorage(storage: persistentStorage);
 
-      final authenticationClient = FirebaseAuthenticationClient(
+      final authenticationClient = AppwriteAuthenticationClient(
         tokenStorage: tokenStorage,
+        projectId: '6911690b003198add805',
+        endpoint: 'https://sfo.cloud.appwrite.io/v1',
       );
 
       final notificationsClient = FirebaseNotificationsClient(

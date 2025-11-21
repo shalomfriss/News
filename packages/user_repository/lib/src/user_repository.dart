@@ -198,6 +198,78 @@ class UserRepository {
     }
   }
 
+  /// Signs in with the provided [email] and [password].
+  ///
+  /// This method is specific to authentication clients that support
+  /// email/password authentication (e.g., Appwrite).
+  ///
+  /// Throws a [LogInWithEmailLinkFailure] if an exception occurs.
+  Future<void> logInWithEmailPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      // Use dynamic invocation to call Appwrite-specific method
+      // This allows the method to work with AppwriteAuthenticationClient
+      // without creating a direct dependency
+      final authClient = _authenticationClient as dynamic;
+      await authClient.logInWithEmailPassword(
+        email: email,
+        password: password,
+      );
+    } on LogInWithEmailLinkFailure {
+      rethrow;
+    } on NoSuchMethodError catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        LogInWithEmailLinkFailure(
+          UnsupportedError(
+            'Email/password login is not supported by the current authentication client',
+          ),
+        ),
+        stackTrace,
+      );
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(LogInWithEmailLinkFailure(error), stackTrace);
+    }
+  }
+
+  /// Creates a new account with the provided [email], [password], and optional [name].
+  ///
+  /// This method is specific to authentication clients that support
+  /// email/password authentication (e.g., Appwrite).
+  ///
+  /// Throws a [LogInWithEmailLinkFailure] if an exception occurs.
+  Future<void> signUpWithEmailPassword({
+    required String email,
+    required String password,
+    String? name,
+  }) async {
+    try {
+      // Use dynamic invocation to call Appwrite-specific method
+      // This allows the method to work with AppwriteAuthenticationClient
+      // without creating a direct dependency
+      final authClient = _authenticationClient as dynamic;
+      await authClient.signUpWithEmailPassword(
+        email: email,
+        password: password,
+        name: name,
+      );
+    } on LogInWithEmailLinkFailure {
+      rethrow;
+    } on NoSuchMethodError catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        LogInWithEmailLinkFailure(
+          UnsupportedError(
+            'Email/password signup is not supported by the current authentication client',
+          ),
+        ),
+        stackTrace,
+      );
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(LogInWithEmailLinkFailure(error), stackTrace);
+    }
+  }
+
   /// Signs out the current user which will emit
   /// [User.anonymous] from the [user] Stream.
   ///

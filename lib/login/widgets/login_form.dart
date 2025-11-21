@@ -70,6 +70,8 @@ class _LoginContent extends StatelessWidget {
               _TwitterLoginButton(),
               const SizedBox(height: AppSpacing.lg),
               _ContinueWithEmailLoginButton(),
+              const SizedBox(height: AppSpacing.lg),
+              _ContinueWithEmailPasswordLoginButton(),
             ],
           ),
         );
@@ -211,6 +213,27 @@ class _ContinueWithEmailLoginButton extends StatelessWidget {
           Assets.icons.emailOutline.svg(),
           const SizedBox(width: AppSpacing.lg),
           Text(context.l10n.loginWithEmailButtonText),
+        ],
+      ),
+    );
+  }
+}
+
+class _ContinueWithEmailPasswordLoginButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AppButton.outlinedTransparentDarkAqua(
+      key: const Key('loginForm_emailPasswordLogin_appButton'),
+      onPressed: () => Navigator.of(context).push<void>(
+        LoginWithEmailPasswordPage.route(),
+      ),
+      textStyle: Theme.of(context).textTheme.titleMedium,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Assets.icons.emailOutline.svg(),
+          const SizedBox(width: AppSpacing.lg),
+          const Text('Sign in with Email & Password'),
         ],
       ),
     );

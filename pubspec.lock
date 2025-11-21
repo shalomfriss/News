@@ -62,6 +62,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "17.0.0"
+  appwrite_authentication_client:
+    dependency: "direct main"
+    description:
+      path: "packages/authentication_client/appwrite_authentication_client"
+      relative: true
+    source: path
+    version: "1.0.0+1"
   args:
     dependency: transitive
     description:
