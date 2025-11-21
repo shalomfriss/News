@@ -5,11 +5,11 @@ import 'package:demo_news/login/login.dart';
 import 'package:form_inputs/form_inputs.dart';
 import 'package:user_repository/user_repository.dart';
 
-class LoginWithEmailPasswordPage extends StatelessWidget {
-  const LoginWithEmailPasswordPage({super.key});
+class SignUpWithEmailPasswordPage extends StatelessWidget {
+  const SignUpWithEmailPasswordPage({super.key});
 
   static Route<void> route() =>
-      MaterialPageRoute<void>(builder: (_) => const LoginWithEmailPasswordPage());
+      MaterialPageRoute<void>(builder: (_) => const SignUpWithEmailPasswordPage());
 
   @override
   Widget build(BuildContext context) {
@@ -22,31 +22,33 @@ class LoginWithEmailPasswordPage extends StatelessWidget {
           leading: const AppBackButton(),
           actions: [
             IconButton(
-              key: const Key('loginWithEmailPasswordPage_closeIcon'),
+              key: const Key('signUpWithEmailPasswordPage_closeIcon'),
               icon: const Icon(Icons.close),
               onPressed: () => Navigator.pop(context),
             ),
           ],
         ),
-        body: const LoginWithEmailPasswordForm(),
+        body: const SignUpWithEmailPasswordForm(),
       ),
     );
   }
 }
 
-class LoginWithEmailPasswordForm extends StatefulWidget {
-  const LoginWithEmailPasswordForm({super.key});
+class SignUpWithEmailPasswordForm extends StatefulWidget {
+  const SignUpWithEmailPasswordForm({super.key});
 
   @override
-  State<LoginWithEmailPasswordForm> createState() => _LoginWithEmailPasswordFormState();
+  State<SignUpWithEmailPasswordForm> createState() => _SignUpWithEmailPasswordFormState();
 }
 
-class _LoginWithEmailPasswordFormState extends State<LoginWithEmailPasswordForm> {
+class _SignUpWithEmailPasswordFormState extends State<SignUpWithEmailPasswordForm> {
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -61,13 +63,13 @@ class _LoginWithEmailPasswordFormState extends State<LoginWithEmailPasswordForm>
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
-              const SnackBar(content: Text('Login successful!')),
+              const SnackBar(content: Text('Account created successfully!')),
             );
         } else if (state.status.isFailure) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
-              const SnackBar(content: Text('Login failed. Please check your credentials.')),
+              const SnackBar(content: Text('Sign up failed. Please try again.')),
             );
         }
       },
@@ -88,16 +90,17 @@ class _LoginWithEmailPasswordFormState extends State<LoginWithEmailPasswordForm>
                 children: [
                   const _HeaderTitle(),
                   const SizedBox(height: AppSpacing.xxxlg),
+                  _NameInput(controller: _nameController),
+                  const SizedBox(height: AppSpacing.lg),
                   _EmailInput(controller: _emailController),
                   const SizedBox(height: AppSpacing.lg),
                   _PasswordInput(controller: _passwordController),
                   const Spacer(),
-                  _LoginButton(
+                  _SignUpButton(
+                    nameController: _nameController,
                     emailController: _emailController,
                     passwordController: _passwordController,
                   ),
-                  const SizedBox(height: AppSpacing.lg),
-                  const _SignUpLink(),
                 ],
               ),
             ),
@@ -115,9 +118,30 @@ class _HeaderTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Text(
-      'Sign in with Email',
-      key: const Key('loginWithEmailPasswordForm_header_title'),
+      'Create Account',
+      key: const Key('signUpWithEmailPasswordForm_header_title'),
       style: theme.textTheme.displaySmall,
+    );
+  }
+}
+
+class _NameInput extends StatelessWidget {
+  const _NameInput({required this.controller});
+
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<LoginBloc>().state;
+
+    return TextField(
+      key: const Key('signUpWithEmailPasswordForm_nameInput_textField'),
+      controller: controller,
+      readOnly: state.status.isInProgress,
+      decoration: const InputDecoration(
+        hintText: 'Name (optional)',
+        border: OutlineInputBorder(),
+      ),
     );
   }
 }
@@ -132,7 +156,7 @@ class _EmailInput extends StatelessWidget {
     final state = context.watch<LoginBloc>().state;
 
     return AppEmailTextField(
-      key: const Key('loginWithEmailPasswordForm_emailInput_textField'),
+      key: const Key('signUpWithEmailPasswordForm_emailInput_textField'),
       controller: controller,
       readOnly: state.status.isInProgress,
       hintText: 'Email',
@@ -157,7 +181,7 @@ class _PasswordInputState extends State<_PasswordInput> {
     final state = context.watch<LoginBloc>().state;
 
     return TextField(
-      key: const Key('loginWithEmailPasswordForm_passwordInput_textField'),
+      key: const Key('signUpWithEmailPasswordForm_passwordInput_textField'),
       controller: widget.controller,
       readOnly: state.status.isInProgress,
       obscureText: _obscureText,
@@ -179,12 +203,14 @@ class _PasswordInputState extends State<_PasswordInput> {
   }
 }
 
-class _LoginButton extends StatelessWidget {
-  const _LoginButton({
+class _SignUpButton extends StatelessWidget {
+  const _SignUpButton({
+    required this.nameController,
     required this.emailController,
     required this.passwordController,
   });
 
+  final TextEditingController nameController;
   final TextEditingController emailController;
   final TextEditingController passwordController;
 
@@ -193,14 +219,15 @@ class _LoginButton extends StatelessWidget {
     final state = context.watch<LoginBloc>().state;
 
     return AppButton.darkAqua(
-      key: const Key('loginWithEmailPasswordForm_loginButton'),
+      key: const Key('signUpWithEmailPasswordForm_signUpButton'),
       onPressed: () {
         if (emailController.text.isNotEmpty &&
             passwordController.text.isNotEmpty) {
           context.read<LoginBloc>().add(
-                LoginEmailPasswordSubmitted(
+                SignUpEmailPasswordSubmitted(
                   email: emailController.text,
                   password: passwordController.text,
+                  name: nameController.text.isEmpty ? null : nameController.text,
                 ),
               );
         }
@@ -210,31 +237,7 @@ class _LoginButton extends StatelessWidget {
               dimension: 24,
               child: CircularProgressIndicator(),
             )
-          : const Text('Sign In'),
-    );
-  }
-}
-
-class _SignUpLink extends StatelessWidget {
-  const _SignUpLink();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          'Don\'t have an account? ',
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        TextButton(
-          key: const Key('loginWithEmailPasswordForm_signUpLink'),
-          onPressed: () => Navigator.of(context).push<void>(
-            SignUpWithEmailPasswordPage.route(),
-          ),
-          child: const Text('Sign Up'),
-        ),
-      ],
+          : const Text('Create Account'),
     );
   }
 }
