@@ -15,6 +15,8 @@ import 'package:package_info_client/package_info_client.dart';
 import 'package:permission_client/permission_client.dart';
 import 'package:persistent_storage/persistent_storage.dart';
 import 'package:purchase_client/purchase_client.dart';
+import 'package:stories_repository/stories_repository.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:token_storage/token_storage.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -74,6 +76,11 @@ void main() {
         apiClient: apiClient,
       );
 
+      // Create Supabase stories repository
+      final storiesRepository = StoriesRepository(
+        supabaseClient: Supabase.instance.client,
+      );
+
       final notificationsRepository = NotificationsRepository(
         permissionClient: permissionClient,
         storage: NotificationsStorage(storage: persistentStorage),
@@ -102,6 +109,7 @@ void main() {
         analyticsRepository: analyticsRepository,
         inAppPurchaseRepository: inAppPurchaseRepository,
         adsConsentClient: adsConsentClient,
+        storiesRepository: storiesRepository,
         user: await userRepository.user.first,
       );
     },

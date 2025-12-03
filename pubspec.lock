@@ -1681,6 +1681,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.1"
+  stories_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/stories_repository"
+      relative: true
+    source: path
+    version: "1.0.0+1"
   stream_channel:
     dependency: transitive
     description:

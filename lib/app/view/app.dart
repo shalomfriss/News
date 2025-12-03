@@ -18,6 +18,7 @@ import 'package:news_blocks_ui/news_blocks_ui.dart';
 import 'package:news_repository/news_repository.dart';
 import 'package:notifications_repository/notifications_repository.dart';
 import 'package:platform/platform.dart';
+import 'package:stories_repository/stories_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
 class App extends StatefulWidget {
@@ -29,6 +30,7 @@ class App extends StatefulWidget {
     required InAppPurchaseRepository inAppPurchaseRepository,
     required AnalyticsRepository analyticsRepository,
     required AdsConsentClient adsConsentClient,
+    required StoriesRepository storiesRepository,
     required User user,
     this.account,
     super.key,
@@ -39,6 +41,7 @@ class App extends StatefulWidget {
         _inAppPurchaseRepository = inAppPurchaseRepository,
         _analyticsRepository = analyticsRepository,
         _adsConsentClient = adsConsentClient,
+        _storiesRepository = storiesRepository,
         _user = user;
 
   final UserRepository _userRepository;
@@ -48,6 +51,7 @@ class App extends StatefulWidget {
   final InAppPurchaseRepository _inAppPurchaseRepository;
   final AnalyticsRepository _analyticsRepository;
   final AdsConsentClient _adsConsentClient;
+  final StoriesRepository _storiesRepository;
   final User _user;
   final Account? account;
 
@@ -67,6 +71,7 @@ class _AppState extends State<App> {
         RepositoryProvider.value(value: widget._analyticsRepository),
         RepositoryProvider.value(value: widget._inAppPurchaseRepository),
         RepositoryProvider.value(value: widget._adsConsentClient),
+        RepositoryProvider.value(value: widget._storiesRepository),
       ],
       child: MultiBlocProvider(
         providers: [

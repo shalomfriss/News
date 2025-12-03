@@ -1,0 +1,16 @@
+name: stories_repository
+description: A repository that manages stories data from Supabase.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  equatable: ^2.0.3
+  supabase_flutter: ^2.9.1
+
+dev_dependencies:
+  test: ^1.21.4
+  mocktail: ^1.0.2
+  very_good_analysis: ^6.0.0

@@ -83,6 +83,8 @@ dependencies:
     path: packages/share_launcher
   shared_preferences: ^2.0.15
   sliver_tools: ^0.2.9
+  stories_repository:
+    path: packages/stories_repository
   stream_transform: ^2.0.0
   test: ^1.21.4
   token_storage:

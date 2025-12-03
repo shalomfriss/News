@@ -7,6 +7,7 @@ import 'package:demo_news/home/home.dart';
 import 'package:demo_news/login/login.dart';
 import 'package:demo_news/navigation/navigation.dart';
 import 'package:demo_news/search/search.dart';
+import 'package:demo_news/stories/stories.dart';
 import 'package:demo_news/user_profile/user_profile.dart';
 
 class HomeView extends StatelessWidget {
