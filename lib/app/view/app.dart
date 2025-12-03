@@ -30,7 +30,7 @@ class App extends StatefulWidget {
     required AnalyticsRepository analyticsRepository,
     required AdsConsentClient adsConsentClient,
     required User user,
-    required this.account,
+    this.account,
     super.key,
   })  : _userRepository = userRepository,
         _newsRepository = newsRepository,
@@ -49,7 +49,7 @@ class App extends StatefulWidget {
   final AnalyticsRepository _analyticsRepository;
   final AdsConsentClient _adsConsentClient;
   final User _user;
-  final Account account;
+  final Account? account;
 
   @override
   State<App> createState() => _AppState();

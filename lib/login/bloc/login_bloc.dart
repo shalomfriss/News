@@ -22,6 +22,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginFacebookSubmitted>(_onFacebookSubmitted);
     on<LoginEmailPasswordSubmitted>(_onEmailPasswordSubmitted);
     on<SignUpEmailPasswordSubmitted>(_onSignUpEmailPasswordSubmitted);
+    on<ForgotPasswordSubmitted>(_onForgotPasswordSubmitted);
   }
 
   final UserRepository _userRepository;
@@ -142,6 +143,22 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         email: event.email,
         password: event.password,
         name: event.name,
+      );
+      emit(state.copyWith(status: FormzSubmissionStatus.success));
+    } catch (error, stackTrace) {
+      emit(state.copyWith(status: FormzSubmissionStatus.failure));
+      addError(error, stackTrace);
+    }
+  }
+
+  Future<void> _onForgotPasswordSubmitted(
+    ForgotPasswordSubmitted event,
+    Emitter<LoginState> emit,
+  ) async {
+    emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+    try {
+      await _userRepository.sendPasswordRecoveryEmail(
+        email: event.email,
       );
       emit(state.copyWith(status: FormzSubmissionStatus.success));
     } catch (error, stackTrace) {

@@ -721,19 +721,19 @@ abstract class AppLocalizations {
   /// Delete account dialog subtitle
   ///
   /// In en, this message translates to:
-  /// **'ADD YOUR DELETE DIALOG SUBTITLE'**
+  /// **'You will be logged out of your account. Your account data will remain saved and you can log back in anytime.'**
   String get deleteAccountDialogSubtitle;
 
   /// Delete account dialog title
   ///
   /// In en, this message translates to:
-  /// **'ADD YOUR DELETE DIALOG TITLE'**
+  /// **'Log out of your account?'**
   String get deleteAccountDialogTitle;
 
   /// User profile delete account button title
   ///
   /// In en, this message translates to:
-  /// **'Delete account'**
+  /// **'Log out'**
   String get userProfileDeleteAccountButton;
 }
 

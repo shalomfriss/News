@@ -1,5 +1,5 @@
 import 'package:ads_consent_client/ads_consent_client.dart';
-import 'package:appwrite_authentication_client/appwrite_authentication_client.dart';
+import 'package:supabase_authentication_client/supabase_authentication_client.dart';
 import 'package:article_repository/article_repository.dart';
 import 'package:deep_link_client/deep_link_client.dart';
 import 'package:firebase_deep_link_client/firebase_deep_link_client.dart';
@@ -17,7 +17,6 @@ import 'package:persistent_storage/persistent_storage.dart';
 import 'package:purchase_client/purchase_client.dart';
 import 'package:token_storage/token_storage.dart';
 import 'package:user_repository/user_repository.dart';
-import 'package:appwrite/appwrite.dart';
 
 void main() {
   bootstrap(
@@ -53,10 +52,10 @@ void main() {
 
       final userStorage = UserStorage(storage: persistentStorage);
 
-      final authenticationClient = AppwriteAuthenticationClient(
+      final authenticationClient = SupabaseAuthenticationClient(
         tokenStorage: tokenStorage,
-        projectId: '6911690b003198add805',
-        endpoint: 'https://sfo.cloud.appwrite.io/v1',
+        supabaseUrl: 'https://nxfiplvukpehppydgseh.supabase.co',
+        supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54ZmlwbHZ1a3BlaHBweWRnc2VoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NjY3NTgsImV4cCI6MjA3OTE0Mjc1OH0.gQqZYmu2Cj_s5ljX3kKqelt1kuZbb2Z0C0WvBQx5JGE',
       );
 
       final notificationsClient = FirebaseNotificationsClient(
@@ -95,11 +94,6 @@ void main() {
 
       final adsConsentClient = AdsConsentClient();
 
-      Client client = Client()
-          .setEndpoint("https://sfo.cloud.appwrite.io/v1")
-          .setProject("6911690b003198add805");
-      Account account = Account(client);
-
       return App(
         userRepository: userRepository,
         newsRepository: newsRepository,
@@ -109,7 +103,6 @@ void main() {
         inAppPurchaseRepository: inAppPurchaseRepository,
         adsConsentClient: adsConsentClient,
         user: await userRepository.user.first,
-        account: account,
       );
     },
   );

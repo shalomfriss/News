@@ -345,11 +345,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteAccountDialogCancelButtonText => 'Cancel';
 
   @override
-  String get deleteAccountDialogSubtitle => 'ADD YOUR DELETE DIALOG SUBTITLE';
+  String get deleteAccountDialogSubtitle =>
+      'You will be logged out of your account. Your account data will remain saved and you can log back in anytime.';
 
   @override
-  String get deleteAccountDialogTitle => 'ADD YOUR DELETE DIALOG TITLE';
+  String get deleteAccountDialogTitle => 'Log out of your account?';
 
   @override
-  String get userProfileDeleteAccountButton => 'Delete account';
+  String get userProfileDeleteAccountButton => 'Log out';
 }

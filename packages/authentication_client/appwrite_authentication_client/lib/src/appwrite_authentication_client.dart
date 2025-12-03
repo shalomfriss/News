@@ -158,6 +158,44 @@ class AppwriteAuthenticationClient implements AuthenticationClient {
     }
   }
 
+  /// Sends a password recovery email to the provided [email].
+  ///
+  /// The user will receive an email with a link to reset their password.
+  /// The [url] parameter should be the URL of your password reset page.
+  Future<void> sendPasswordRecoveryEmail({
+    required String email,
+    required String url,
+  }) async {
+    try {
+      await _account.createRecovery(
+        email: email,
+        url: url,
+      );
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(SendLoginEmailLinkFailure(error), stackTrace);
+    }
+  }
+
+  /// Completes the password recovery process.
+  ///
+  /// This should be called after the user clicks the link in the recovery email.
+  /// The [userId], [secret], and [password] are required to complete the recovery.
+  Future<void> completePasswordRecovery({
+    required String userId,
+    required String secret,
+    required String password,
+  }) async {
+    try {
+      await _account.updateRecovery(
+        userId: userId,
+        secret: secret,
+        password: password,
+      );
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(LogInWithEmailLinkFailure(error), stackTrace);
+    }
+  }
+
   @override
   Future<void> sendLoginEmailLink({
     required String email,
@@ -229,13 +267,27 @@ class AppwriteAuthenticationClient implements AuthenticationClient {
   @override
   Future<void> deleteAccount() async {
     try {
-      // Appwrite requires the user to delete their own account
-      // First, we need to delete all sessions, then the account
+      // Delete all user sessions from all devices first
       await _account.deleteSessions();
 
-      // Note: Appwrite's Account.delete() requires additional verification
-      // For now, we'll just sign out. The actual deletion would need
-      // to be implemented server-side or with additional verification.
+      // Appwrite SDK doesn't provide a direct client-side account deletion method
+      // for security reasons. Account deletion typically requires:
+      // 1. Server-side implementation via Appwrite Functions
+      // 2. Using the Management API with proper permissions
+      //
+      // For now, we'll revoke all access by deleting all sessions and clearing
+      // local data. This effectively logs the user out from all devices.
+      //
+      // To implement full account deletion:
+      // - Create an Appwrite Function that calls the Users API to delete the account
+      // - Call that function here using _client.call()
+      //
+      // Example for future implementation:
+      // await _client.call(
+      //   method: 'POST',
+      //   path: '/functions/delete-account/executions',
+      // );
+
       _currentUser = null;
       _userController.add(AuthenticationUser.anonymous);
       await _tokenStorage.clearToken();

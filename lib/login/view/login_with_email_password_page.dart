@@ -91,6 +91,8 @@ class _LoginWithEmailPasswordFormState extends State<LoginWithEmailPasswordForm>
                   _EmailInput(controller: _emailController),
                   const SizedBox(height: AppSpacing.lg),
                   _PasswordInput(controller: _passwordController),
+                  const SizedBox(height: AppSpacing.sm),
+                  const _ForgotPasswordLink(),
                   const Spacer(),
                   _LoginButton(
                     emailController: _emailController,
@@ -211,6 +213,35 @@ class _LoginButton extends StatelessWidget {
               child: CircularProgressIndicator(),
             )
           : const Text('Sign In'),
+    );
+  }
+}
+
+class _ForgotPasswordLink extends StatelessWidget {
+  const _ForgotPasswordLink();
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: TextButton(
+        key: const Key('loginWithEmailPasswordForm_forgotPasswordLink'),
+        onPressed: () {
+          showDialog<void>(
+            context: context,
+            builder: (_) => BlocProvider.value(
+              value: context.read<LoginBloc>(),
+              child: const ForgotPasswordDialog(),
+            ),
+          );
+        },
+        child: Text(
+          'Forgot Password?',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+        ),
+      ),
     );
   }
 }

@@ -270,6 +270,41 @@ class UserRepository {
     }
   }
 
+  /// Sends a password recovery email to the provided [email].
+  ///
+  /// This method is specific to authentication clients that support
+  /// password recovery (e.g., Appwrite).
+  ///
+  /// Throws a [SendLoginEmailLinkFailure] if an exception occurs.
+  Future<void> sendPasswordRecoveryEmail({
+    required String email,
+  }) async {
+    try {
+      // Use dynamic invocation to call Appwrite-specific method
+      final authClient = _authenticationClient as dynamic;
+      // For password recovery, we need to provide a URL where the user will be redirected
+      // This should be a deep link to your app
+      const recoveryUrl = 'https://your-app.com/password-reset';
+      await authClient.sendPasswordRecoveryEmail(
+        email: email,
+        url: recoveryUrl,
+      );
+    } on SendLoginEmailLinkFailure {
+      rethrow;
+    } on NoSuchMethodError catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        SendLoginEmailLinkFailure(
+          UnsupportedError(
+            'Password recovery is not supported by the current authentication client',
+          ),
+        ),
+        stackTrace,
+      );
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(SendLoginEmailLinkFailure(error), stackTrace);
+    }
+  }
+
   /// Signs out the current user which will emit
   /// [User.anonymous] from the [user] Stream.
   ///

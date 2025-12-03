@@ -71,3 +71,17 @@ class SignUpEmailPasswordSubmitted extends LoginEvent with AnalyticsEventMixin {
   @override
   List<Object> get props => [email, password, if (name != null) name!];
 }
+
+class ForgotPasswordSubmitted extends LoginEvent with AnalyticsEventMixin {
+  const ForgotPasswordSubmitted({
+    required this.email,
+  });
+
+  final String email;
+
+  @override
+  AnalyticsEvent get event => const AnalyticsEvent('ForgotPasswordSubmitted');
+
+  @override
+  List<Object> get props => [email];
+}

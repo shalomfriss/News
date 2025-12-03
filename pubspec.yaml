@@ -33,6 +33,8 @@ dependencies:
      path: packages/authentication_client/firebase_authentication_client
   appwrite_authentication_client:
      path: packages/authentication_client/appwrite_authentication_client
+  supabase_authentication_client:
+     path: packages/authentication_client/supabase_authentication_client
   firebase_core: ^4.2.1
   firebase_crashlytics: ^5.0.4
   firebase_deep_link_client:

@@ -623,19 +623,19 @@
     "type": "String",
     "placeholders": {}
   },
-  "deleteAccountDialogSubtitle": "ADD YOUR DELETE DIALOG SUBTITLE",
+  "deleteAccountDialogSubtitle": "You will be logged out of your account. Your account data will remain saved and you can log back in anytime.",
   "@deleteAccountDialogSubtitle": {
     "description": "Delete account dialog subtitle",
     "type": "String",
     "placeholders": {}
   },
-  "deleteAccountDialogTitle": "ADD YOUR DELETE DIALOG TITLE",
+  "deleteAccountDialogTitle": "Log out of your account?",
   "@deleteAccountDialogTitle": {
     "description": "Delete account dialog title",
     "type": "String",
     "placeholders": {}
   },
-  "userProfileDeleteAccountButton": "Delete account",
+  "userProfileDeleteAccountButton": "Log out",
   "@userProfileDeleteAccountButton": {
     "description": "User profile delete account button title",
     "type": "String",
