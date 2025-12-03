@@ -11,8 +11,9 @@ import 'package:user_repository/user_repository.dart';
 
 Future<void> showPurchaseSubscriptionDialog({
   required BuildContext context,
-}) async =>
-    showGeneralDialog(
+}) async {
+  try {
+    await showGeneralDialog(
       context: context,
       pageBuilder: (_, __, ___) => const PurchaseSubscriptionDialog(),
       transitionBuilder: (context, anim1, anim2, child) {
@@ -23,6 +24,10 @@ Future<void> showPurchaseSubscriptionDialog({
         );
       },
     );
+  } catch (e) {
+    print('Error showing subscription dialog: $e');
+  }
+}
 
 class PurchaseSubscriptionDialog extends StatelessWidget {
   const PurchaseSubscriptionDialog({super.key});
@@ -105,8 +110,36 @@ class PurchaseSubscriptionDialogView extends StatelessWidget {
                         },
                         builder: (context, state) {
                           if (state.subscriptions.isEmpty) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
+                            return Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.info_outline,
+                                    size: 64,
+                                    color: AppColors.mediumEmphasisPrimary,
+                                  ),
+                                  const SizedBox(height: AppSpacing.lg),
+                                  Text(
+                                    'Subscriptions are not available at this time.',
+                                    style: theme.textTheme.bodyLarge,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: AppSpacing.md),
+                                  Text(
+                                    'Please check your connection and try again.',
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: AppColors.mediumEmphasisPrimary,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: AppSpacing.xlg),
+                                  AppButton.smallTransparent(
+                                    onPressed: () => context.read<SubscriptionsBloc>().add(SubscriptionsRequested()),
+                                    child: const Text('Retry'),
+                                  ),
+                                ],
+                              ),
                             );
                           } else {
                             return CustomScrollView(

@@ -42,7 +42,10 @@ class SubscriptionsBloc extends Bloc<SubscriptionsEvent, SubscriptionsState> {
       final subscriptions = await _inAppPurchaseRepository.fetchSubscriptions();
       emit(state.copyWith(subscriptions: subscriptions));
     } catch (error, stackTrace) {
+      print('Error fetching subscriptions: $error');
       addError(error, stackTrace);
+      // Emit empty list so UI doesn't get stuck on spinner
+      emit(state.copyWith(subscriptions: []));
     }
   }
 
