@@ -16,7 +16,7 @@
 | BLoC | Location | Purpose |
 |------|----------|---------|
 | AppBloc | `lib/app/bloc/` | Authentication & app lifecycle |
-| FeedBloc | `lib/feed/bloc/` | News feed (with HydratedBloc) |
+| FeedBloc | `lib/feed/bloc/` | News feed (with HydratedBloc) ~~|~~
 | ArticleBloc | `lib/article/bloc/` | Article viewing & view limits |
 | CategoriesBloc | `lib/categories/bloc/` | Category management |
 | SearchBloc | `lib/search/bloc/` | Popular/relevant search |

@@ -48,7 +48,7 @@ class HomeView extends StatelessWidget {
         body: IndexedStack(
           index: selectedTab,
           children: const [
-            FeedView(),
+            StoriesView(),
             SearchPage(),
           ],
         ),
