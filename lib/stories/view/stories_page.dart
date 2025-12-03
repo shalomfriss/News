@@ -306,7 +306,7 @@ class _ScoreChip extends StatelessWidget {
           color: color,
         ),
       ),
-      backgroundColor: color.withOpacity(0.1),
+      backgroundColor: color.withValues(alpha: 0.1),
     );
   }
 }

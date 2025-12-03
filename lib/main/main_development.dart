@@ -61,7 +61,7 @@ void main() {
       );
 
       final notificationsClient = FirebaseNotificationsClient(
-        firebaseMessaging: firebaseMessaging,
+        firebaseMessaging: firebaseMessaging!,
       );
 
       final userRepository = UserRepository(

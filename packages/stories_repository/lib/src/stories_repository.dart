@@ -77,6 +77,7 @@ class StoriesRepository {
       var query = _supabaseClient
           .from('stories')
           .select();
+      print('📚 Fetching stories from Supabase (limit: $limit, offset: $offset)');
 
       // Add category filter if provided (must be before range)
       if (category != null && category.isNotEmpty) {
@@ -105,6 +106,20 @@ class StoriesRepository {
         totalCount: offset + stories.length,
         hasMore: hasMore,
       );
+
+      // Add category filter if provided (must be before range)
+      if (category != null && category.isNotEmpty) {
+        query = query.eq('category', category);
+      }
+
+      // Execute the query with pagination
+      // print('📚 Executing query...');
+      // final response = await query
+      //     .range(offset, offset + limit - 1) as List<dynamic>;
+      //
+      // print('📚 Received ${response.length} stories from Supabase');
+
+
     } catch (error, stackTrace) {
       print('❌ Error fetching stories: $error');
       print('Stack trace: $stackTrace');

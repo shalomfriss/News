@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:stories_repository/stories_repository.dart';
 
 class StoriesView extends StatefulWidget {
@@ -132,121 +133,185 @@ class _StoriesViewState extends State<StoriesView> {
         }
 
         final story = _stories[index];
-        return Card(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (story.summary != null) ...[
-                  Text(
-                    story.summary!,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                ],
-                Row(
-                  children: [
-                    if (story.accuracyScore != null) ...[
-                      _ScoreChip(
-                        label: 'Accuracy',
-                        score: story.accuracyScore!,
-                        icon: Icons.fact_check,
-                      ),
-                      const SizedBox(width: 8),
-                    ],
-                    if (story.propagandaScore != null) ...[
-                      _ScoreChip(
-                        label: 'Propaganda',
-                        score: story.propagandaScore!,
-                        icon: Icons.warning,
-                        isWarning: true,
-                      ),
-                    ],
-                  ],
-                ),
-                if (story.accuracyAssessment != null) ...[
-                  const SizedBox(height: 12),
-                  const _SectionHeader(title: 'Accuracy Assessment'),
-                  const SizedBox(height: 4),
-                  Text(
-                    story.accuracyAssessment!,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ],
-                if (story.propagandaIndicators != null) ...[
-                  const SizedBox(height: 12),
-                  const _SectionHeader(title: 'Propaganda Indicators'),
-                  const SizedBox(height: 4),
-                  Text(
-                    story.propagandaIndicators!,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ],
-                if (story.authorSources != null) ...[
-                  const SizedBox(height: 12),
-                  const _SectionHeader(title: 'Author Sources'),
-                  const SizedBox(height: 4),
-                  Text(
-                    story.authorSources!,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ],
-                if (story.authorSourceBias != null) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    'Bias: ${story.authorSourceBias}',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ],
-                if (story.aiSources != null) ...[
-                  const SizedBox(height: 12),
-                  const _SectionHeader(title: 'AI Sources'),
-                  const SizedBox(height: 4),
-                  Text(
-                    story.aiSources!,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ],
-                if (story.overallMetrics != null) ...[
-                  const SizedBox(height: 12),
-                  const _SectionHeader(title: 'Overall Metrics'),
-                  const SizedBox(height: 4),
-                  Text(
-                    story.overallMetrics!,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        );
+        return _StoryCard(story: story);
       },
     );
   }
 }
 
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.title});
+class _StoryCard extends StatefulWidget {
+  const _StoryCard({required this.story});
 
-  final String title;
+  final Story story;
+
+  @override
+  State<_StoryCard> createState() => _StoryCardState();
+}
+
+class _StoryCardState extends State<_StoryCard> {
+  final Map<String, bool> _expandedSections = {};
+
+  bool _isSectionExpanded(String section) {
+    return _expandedSections[section] ?? false;
+  }
+
+  void _toggleSection(String section) {
+    setState(() {
+      final isCurrentlyExpanded = _isSectionExpanded(section);
+      _expandedSections.clear();
+      if (!isCurrentlyExpanded) {
+        _expandedSections[section] = true;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: const TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.bold,
-        color: Colors.grey,
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (widget.story.summary != null) ...[
+              Text(
+                widget.story.summary!,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
+            Row(
+              children: [
+                if (widget.story.accuracyScore != null) ...[
+                  _ScoreChip(
+                    label: 'Accuracy',
+                    score: widget.story.accuracyScore!,
+                    icon: Icons.fact_check,
+                  ),
+                  const SizedBox(width: 8),
+                ],
+                if (widget.story.propagandaScore != null) ...[
+                  _ScoreChip(
+                    label: 'Propaganda',
+                    score: widget.story.propagandaScore!,
+                    icon: Icons.warning,
+                    isWarning: true,
+                  ),
+                ],
+              ],
+            ),
+            if (widget.story.accuracyAssessment != null)
+              _CollapsibleSection(
+                title: 'Accuracy Assessment',
+                content: widget.story.accuracyAssessment!,
+                isExpanded: _isSectionExpanded('accuracy'),
+                onToggle: () => _toggleSection('accuracy'),
+              ),
+            if (widget.story.propagandaIndicators != null)
+              _CollapsibleSection(
+                title: 'Propaganda Indicators',
+                content: widget.story.propagandaIndicators!,
+                isExpanded: _isSectionExpanded('propaganda'),
+                onToggle: () => _toggleSection('propaganda'),
+              ),
+            if (widget.story.authorSources != null)
+              _CollapsibleSection(
+                title: 'Author Sources',
+                content: widget.story.authorSources!,
+                isExpanded: _isSectionExpanded('authorSources'),
+                onToggle: () => _toggleSection('authorSources'),
+                subtitle: widget.story.authorSourceBias != null
+                    ? 'Bias: ${widget.story.authorSourceBias}'
+                    : null,
+              ),
+            if (widget.story.aiSources != null)
+              _CollapsibleSection(
+                title: 'AI Sources',
+                content: widget.story.aiSources!,
+                isExpanded: _isSectionExpanded('aiSources'),
+                onToggle: () => _toggleSection('aiSources'),
+              ),
+            if (widget.story.overallMetrics != null)
+              _CollapsibleSection(
+                title: 'Overall Metrics',
+                content: widget.story.overallMetrics!,
+                isExpanded: _isSectionExpanded('metrics'),
+                onToggle: () => _toggleSection('metrics'),
+              ),
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class _CollapsibleSection extends StatelessWidget {
+  const _CollapsibleSection({
+    required this.title,
+    required this.content,
+    required this.isExpanded,
+    required this.onToggle,
+    this.subtitle,
+  });
+
+  final String title;
+  final String content;
+  final bool isExpanded;
+  final VoidCallback onToggle;
+  final String? subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 12),
+        InkWell(
+          onTap: onToggle,
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+              Icon(
+                isExpanded ? Icons.expand_less : Icons.expand_more,
+                color: Colors.grey,
+              ),
+            ],
+          ),
+        ),
+        if (isExpanded) ...[
+          const SizedBox(height: 4),
+          MarkdownBody(
+            data: content,
+            styleSheet: MarkdownStyleSheet(
+              p: const TextStyle(fontSize: 14),
+              listBullet: const TextStyle(fontSize: 14),
+            ),
+          ),
+          if (subtitle != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              subtitle!,
+              style: const TextStyle(
+                fontSize: 13,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
+        ],
+      ],
     );
   }
 }
@@ -280,7 +345,7 @@ class _ScoreChip extends StatelessWidget {
           color: color,
         ),
       ),
-      backgroundColor: color.withOpacity(0.1),
+      backgroundColor: color.withValues(alpha: 0.1),
     );
   }
 }

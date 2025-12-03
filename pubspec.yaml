@@ -86,7 +86,9 @@ dependencies:
   stories_repository:
     path: packages/stories_repository
   stream_transform: ^2.0.0
+  supabase_flutter: ^2.9.1
   test: ^1.21.4
+  flutter_markdown: ^0.7.4+1
   token_storage:
     path: packages/authentication_client/token_storage
   url_launcher: ^6.0.9

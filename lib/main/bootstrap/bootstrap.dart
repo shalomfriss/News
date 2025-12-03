@@ -22,7 +22,7 @@ typedef AppBuilder = Future<Widget> Function(
   // ignore: deprecated_member_use
   // Firebase Dynamic Links was shut down - passing null as stub
   dynamic firebaseDynamicLinks,
-  FirebaseMessaging firebaseMessaging,
+  FirebaseMessaging? firebaseMessaging,
   SharedPreferences sharedPreferences,
   AnalyticsRepository analyticsRepository,
 );
@@ -84,7 +84,7 @@ Future<void> bootstrap(AppBuilder builder) async {
           // ignore: deprecated_member_use
           // Firebase Dynamic Links was shut down - passing null as stub
           null, // FirebaseDynamicLinks.instance,
-          firebaseInitialized ? FirebaseMessaging.instance : null as dynamic,
+          firebaseInitialized ? FirebaseMessaging.instance : null,
           sharedPreferences,
           analyticsRepository,
         ),
