@@ -50,6 +50,7 @@ dependencies:
     sdk: flutter
   demo_news_api:
     path: api
+  dart_frog: ^1.2.0
   flutter_svg: ^2.0.5
   font_awesome_flutter: ^10.1.0
   form_inputs:
