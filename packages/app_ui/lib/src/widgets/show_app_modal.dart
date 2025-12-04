@@ -18,6 +18,7 @@ Future<T?> showAppModal<T>({
     routeSettings: routeSettings,
     constraints: constraints,
     isScrollControlled: true,
+    useSafeArea: true,
     barrierColor: barrierColor,
     isDismissible: isDismissible,
     enableDrag: enableDrag,

@@ -1,6 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
 
 import 'package:authentication_client/authentication_client.dart';
+import 'package:crypto/crypto.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:token_storage/token_storage.dart';
 
@@ -72,21 +76,90 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
   @override
   Future<void> logInWithApple() async {
     try {
-      await _client!.auth.signInWithOAuth(
-        OAuthProvider.apple,
+      // Generate a random nonce for security
+      final rawNonce = _generateNonce();
+      final hashedNonce = _sha256ofString(rawNonce);
+
+      // Request Apple Sign In credentials with the hashed nonce
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        nonce: hashedNonce,
+      );
+
+      // Get the identity token from Apple
+      final idToken = credential.identityToken;
+      if (idToken == null) {
+        throw LogInWithAppleFailure(
+          Exception('Apple Sign In failed: No identity token received'),
+        );
+      }
+
+      // Sign in to Supabase with the Apple credentials
+      await _client!.auth.signInWithIdToken(
+        provider: OAuthProvider.apple,
+        idToken: idToken,
+        nonce: rawNonce,
       );
     } catch (error, stackTrace) {
+      if (error is SignInWithAppleAuthorizationException) {
+        // User canceled the sign in
+        if (error.code == AuthorizationErrorCode.canceled) {
+          Error.throwWithStackTrace(
+            LogInWithAppleCanceled(error),
+            stackTrace,
+          );
+        }
+      }
       Error.throwWithStackTrace(LogInWithAppleFailure(error), stackTrace);
     }
+  }
+
+  /// Generates a cryptographically secure random nonce.
+  String _generateNonce([int length = 32]) {
+    const charset =
+        '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    final random = Random.secure();
+    return List.generate(length, (_) => charset[random.nextInt(charset.length)])
+        .join();
+  }
+
+  /// Returns the sha256 hash of [input] in hex notation.
+  String _sha256ofString(String input) {
+    final bytes = utf8.encode(input);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
   }
 
   @override
   Future<void> logInWithGoogle() async {
     try {
-      await _client!.auth.signInWithOAuth(
+      // Use Supabase's built-in OAuth flow
+      // This launches a browser for authentication
+      final response = await _client!.auth.signInWithOAuth(
         OAuthProvider.google,
+        redirectTo: 'io.supabase.flutterdemo://login-callback/',
+        authScreenLaunchMode: LaunchMode.externalApplication,
       );
+
+      if (!response) {
+        throw LogInWithGoogleCanceled(
+          Exception('Google Sign In was canceled by user'),
+        );
+      }
+    } on LogInWithGoogleCanceled {
+      rethrow;
     } catch (error, stackTrace) {
+      // Check if it's a cancellation error
+      if (error.toString().contains('cancel') ||
+          error.toString().contains('Cancel')) {
+        Error.throwWithStackTrace(
+          LogInWithGoogleCanceled(error),
+          stackTrace,
+        );
+      }
       Error.throwWithStackTrace(LogInWithGoogleFailure(error), stackTrace);
     }
   }
@@ -94,10 +167,30 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
   @override
   Future<void> logInWithFacebook() async {
     try {
-      await _client!.auth.signInWithOAuth(
+      // Use Supabase's built-in OAuth flow
+      // This launches a browser for authentication
+      final response = await _client!.auth.signInWithOAuth(
         OAuthProvider.facebook,
+        redirectTo: 'io.supabase.flutterdemo://login-callback/',
+        authScreenLaunchMode: LaunchMode.externalApplication,
       );
+
+      if (!response) {
+        throw LogInWithFacebookCanceled(
+          Exception('Facebook login was canceled by user'),
+        );
+      }
+    } on LogInWithFacebookCanceled {
+      rethrow;
     } catch (error, stackTrace) {
+      // Check if it's a cancellation error
+      if (error.toString().contains('cancel') ||
+          error.toString().contains('Cancel')) {
+        Error.throwWithStackTrace(
+          LogInWithFacebookCanceled(error),
+          stackTrace,
+        );
+      }
       Error.throwWithStackTrace(LogInWithFacebookFailure(error), stackTrace);
     }
   }
@@ -105,10 +198,30 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
   @override
   Future<void> logInWithTwitter() async {
     try {
-      await _client!.auth.signInWithOAuth(
+      // Use Supabase's built-in OAuth flow
+      // This launches a browser for authentication
+      final response = await _client!.auth.signInWithOAuth(
         OAuthProvider.twitter,
+        redirectTo: 'io.supabase.flutterdemo://login-callback/',
+        authScreenLaunchMode: LaunchMode.externalApplication,
       );
+
+      if (!response) {
+        throw LogInWithTwitterCanceled(
+          Exception('Twitter login was canceled by user'),
+        );
+      }
+    } on LogInWithTwitterCanceled {
+      rethrow;
     } catch (error, stackTrace) {
+      // Check if it's a cancellation error
+      if (error.toString().contains('cancel') ||
+          error.toString().contains('Cancel')) {
+        Error.throwWithStackTrace(
+          LogInWithTwitterCanceled(error),
+          stackTrace,
+        );
+      }
       Error.throwWithStackTrace(LogInWithTwitterFailure(error), stackTrace);
     }
   }

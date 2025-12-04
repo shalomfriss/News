@@ -491,7 +491,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.demo.news.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shalomfriss.news.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REVERSED_CLIENT_ID = "<PASTE-REVERSED-CLIENT-ID-HERE>";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -530,7 +530,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.demo.news.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shalomfriss.news.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REVERSED_CLIENT_ID = "<PASTE-REVERSED-CLIENT-ID-HERE>";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -571,7 +571,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.demo.news.;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shalomfriss.news.;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REVERSED_CLIENT_ID = "<PASTE-REVERSED-CLIENT-ID-HERE>";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -667,7 +667,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.demo.news.;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shalomfriss.news.;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REVERSED_CLIENT_ID = "<PASTE-REVERSED-CLIENT-ID-HERE>";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";

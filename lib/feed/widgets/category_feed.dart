@@ -52,6 +52,7 @@ class CategoryFeed extends StatelessWidget {
         child: SelectionArea(
           child: CustomScrollView(
             controller: scrollController,
+            physics: const ClampingScrollPhysics(),
             slivers: _buildSliverItems(
               context,
               categoryFeed,

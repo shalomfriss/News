@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:analytics_repository/analytics_repository.dart';
+import 'package:authentication_client/authentication_client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_inputs/form_inputs.dart';
@@ -78,6 +79,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       await _userRepository.logInWithApple();
       emit(state.copyWith(status: FormzSubmissionStatus.success));
+    } on LogInWithAppleCanceled {
+      emit(state.copyWith(status: FormzSubmissionStatus.canceled));
     } catch (error, stackTrace) {
       emit(state.copyWith(status: FormzSubmissionStatus.failure));
       addError(error, stackTrace);

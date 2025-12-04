@@ -112,29 +112,33 @@ class _StoriesViewState extends State<StoriesView> {
       );
     }
 
-    return ListView.builder(
-      itemCount: _stories.length + (_hasMore ? 1 : 0),
-      itemBuilder: (context, index) {
-        if (index == _stories.length) {
-          if (_isLoading) {
-            return const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Center(child: CircularProgressIndicator()),
-            );
-          } else {
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                onPressed: _loadStories,
-                child: const Text('Load More'),
-              ),
-            );
+    return ScrollConfiguration(
+      behavior: const _ReducedScrollBehavior(),
+      child: ListView.builder(
+        physics: const ClampingScrollPhysics(),
+        itemCount: _stories.length + (_hasMore ? 1 : 0),
+        itemBuilder: (context, index) {
+          if (index == _stories.length) {
+            if (_isLoading) {
+              return const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Center(child: CircularProgressIndicator()),
+              );
+            } else {
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton(
+                  onPressed: _loadStories,
+                  child: const Text('Load More'),
+                ),
+              );
+            }
           }
-        }
 
-        final story = _stories[index];
-        return _StoryCard(story: story);
-      },
+          final story = _stories[index];
+          return _StoryCard(story: story);
+        },
+      ),
     );
   }
 }
@@ -347,5 +351,42 @@ class _ScoreChip extends StatelessWidget {
       ),
       backgroundColor: color.withValues(alpha: 0.1),
     );
+  }
+}
+
+/// Custom scroll behavior that reduces scroll sensitivity
+class _ReducedScrollBehavior extends ScrollBehavior {
+  const _ReducedScrollBehavior();
+
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    return const ClampingScrollPhysics().applyTo(
+      const _ReducedVelocityScrollPhysics(),
+    );
+  }
+}
+
+/// Custom scroll physics that reduces the scroll velocity/sensitivity
+class _ReducedVelocityScrollPhysics extends ScrollPhysics {
+  const _ReducedVelocityScrollPhysics({super.parent});
+
+  @override
+  _ReducedVelocityScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return _ReducedVelocityScrollPhysics(parent: buildParent(ancestor));
+  }
+
+  @override
+  double applyPhysicsToUserOffset(ScrollMetrics position, double offset) {
+    // Reduce scroll sensitivity by scaling down the offset
+    return super.applyPhysicsToUserOffset(position, offset * 0.5);
+  }
+
+  @override
+  double get minFlingVelocity => 50.0; // Increase minimum fling velocity
+
+  @override
+  double carriedMomentum(double existingVelocity) {
+    // Reduce momentum by 70%
+    return super.carriedMomentum(existingVelocity) * 0.3;
   }
 }

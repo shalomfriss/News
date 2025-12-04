@@ -14,12 +14,14 @@ class OnboardingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.darkBackground,
-      body: BlocProvider(
-        create: (_) => OnboardingBloc(
-          notificationsRepository: context.read<NotificationsRepository>(),
-          adsConsentClient: context.read<AdsConsentClient>(),
+      body: SafeArea(
+        child: BlocProvider(
+          create: (_) => OnboardingBloc(
+            notificationsRepository: context.read<NotificationsRepository>(),
+            adsConsentClient: context.read<AdsConsentClient>(),
+          ),
+          child: const OnboardingView(),
         ),
-        child: const OnboardingView(),
       ),
     );
   }

@@ -43,36 +43,43 @@ class _LoginContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final bottomPadding = MediaQuery.of(context).viewPadding.bottom;
+
     return LayoutBuilder(
       builder: (context, constraints) {
-        return ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: constraints.maxHeight * .75),
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.lg,
-              AppSpacing.lg,
-              AppSpacing.lg,
-              AppSpacing.xxlg,
-            ),
-            children: [
-              const _LoginTitleAndCloseButton(),
-              const SizedBox(height: AppSpacing.sm),
-              const _LoginSubtitle(),
-              const SizedBox(height: AppSpacing.lg),
-              _GoogleLoginButton(),
-              if (theme.platform == TargetPlatform.iOS) ...[
+        return SafeArea(
+          minimum: EdgeInsets.only(
+            bottom: bottomPadding > 0 ? AppSpacing.lg : AppSpacing.xxlg,
+          ),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: constraints.maxHeight * .75),
+            child: ListView(
+              physics: const ClampingScrollPhysics(),
+              shrinkWrap: true,
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.lg,
+                AppSpacing.lg,
+                AppSpacing.lg,
+                AppSpacing.lg,
+              ),
+              children: [
+                const _LoginTitleAndCloseButton(),
+                const SizedBox(height: AppSpacing.sm),
+                const _LoginSubtitle(),
                 const SizedBox(height: AppSpacing.lg),
-                _AppleLoginButton(),
+                _GoogleLoginButton(),
+                if (theme.platform == TargetPlatform.iOS) ...[
+                  const SizedBox(height: AppSpacing.lg),
+                  _AppleLoginButton(),
+                ],
+                const SizedBox(height: AppSpacing.lg),
+                _FacebookLoginButton(),
+                const SizedBox(height: AppSpacing.lg),
+                _TwitterLoginButton(),
+                const SizedBox(height: AppSpacing.lg),
+                _ContinueWithEmailPasswordLoginButton(),
               ],
-              const SizedBox(height: AppSpacing.lg),
-              _FacebookLoginButton(),
-              const SizedBox(height: AppSpacing.lg),
-              _TwitterLoginButton(),
-              const SizedBox(height: AppSpacing.lg),
-              _ContinueWithEmailLoginButton(),
-              const SizedBox(height: AppSpacing.lg),
-              _ContinueWithEmailPasswordLoginButton(),
-            ],
+            ),
           ),
         );
       },
@@ -192,27 +199,6 @@ class _TwitterLoginButton extends StatelessWidget {
           Assets.icons.twitter.svg(),
           const SizedBox(width: AppSpacing.lg),
           Assets.images.continueWithTwitter.svg(),
-        ],
-      ),
-    );
-  }
-}
-
-class _ContinueWithEmailLoginButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AppButton.outlinedTransparentDarkAqua(
-      key: const Key('loginForm_emailLogin_appButton'),
-      onPressed: () => Navigator.of(context).push<void>(
-        LoginWithEmailPage.route(),
-      ),
-      textStyle: Theme.of(context).textTheme.titleMedium,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Assets.icons.emailOutline.svg(),
-          const SizedBox(width: AppSpacing.lg),
-          Text(context.l10n.loginWithEmailButtonText),
         ],
       ),
     );

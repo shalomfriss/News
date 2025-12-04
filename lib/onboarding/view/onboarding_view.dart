@@ -132,7 +132,7 @@ class _OnboardingTitle extends StatelessWidget {
     return Padding(
       key: const Key('onboardingView_onboardingTitle'),
       padding: const EdgeInsets.only(
-        top: AppSpacing.xxxlg + AppSpacing.sm,
+        top: AppSpacing.lg,
         bottom: AppSpacing.xxs,
       ),
       child: Text(

@@ -45,6 +45,14 @@ class LogInWithAppleFailure extends AuthenticationException {
   const LogInWithAppleFailure(super.error);
 }
 
+/// {@template log_in_with_apple_canceled}
+/// Thrown during the sign in with apple process if it's canceled.
+/// {@endtemplate}
+class LogInWithAppleCanceled extends AuthenticationException {
+  /// {@macro log_in_with_apple_canceled}
+  const LogInWithAppleCanceled(super.error);
+}
+
 /// {@template log_in_with_google_failure}
 /// Thrown during the sign in with google process if a failure occurs.
 /// {@endtemplate}
