@@ -1,9 +1,37 @@
 import 'package:app_ui/app_ui.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:demo_news/feed/feed.dart';
 import 'package:demo_news/network_error/network_error.dart';
 import 'package:demo_news_api/client.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+/// Custom scroll physics that reduces the scroll velocity/sensitivity
+class _ReducedVelocityScrollPhysics extends ScrollPhysics {
+  const _ReducedVelocityScrollPhysics({super.parent});
+
+  @override
+  _ReducedVelocityScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return _ReducedVelocityScrollPhysics(parent: buildParent(ancestor));
+  }
+
+  @override
+  double applyPhysicsToUserOffset(ScrollMetrics position, double offset) {
+    // Reduce scroll sensitivity by scaling down the offset
+    return super.applyPhysicsToUserOffset(position, offset * 0.5);
+  }
+
+  @override
+  double get minFlingVelocity => 50; // Increase minimum fling velocity
+
+  @override
+  double carriedMomentum(double existingVelocity) {
+    // Reduce momentum by 70%
+    return super.carriedMomentum(existingVelocity) * 0.3;
+  }
+
+  @override
+  bool get allowImplicitScrolling => true;
+}
 
 class CategoryFeed extends StatelessWidget {
   const CategoryFeed({
@@ -52,7 +80,7 @@ class CategoryFeed extends StatelessWidget {
         child: SelectionArea(
           child: CustomScrollView(
             controller: scrollController,
-            physics: const ClampingScrollPhysics(),
+            physics: const _ReducedVelocityScrollPhysics(),
             slivers: _buildSliverItems(
               context,
               categoryFeed,

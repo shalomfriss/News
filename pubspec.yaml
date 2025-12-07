@@ -31,8 +31,6 @@ dependencies:
   firebase_auth_platform_interface: ^8.1.4
   firebase_authentication_client:
      path: packages/authentication_client/firebase_authentication_client
-  appwrite_authentication_client:
-     path: packages/authentication_client/appwrite_authentication_client
   supabase_authentication_client:
      path: packages/authentication_client/supabase_authentication_client
   firebase_core: ^4.2.1
@@ -56,6 +54,7 @@ dependencies:
   form_inputs:
     path: packages/form_inputs
   google_mobile_ads: ^5.0.0
+  google_sign_in: ^6.2.1
   hydrated_bloc: ^9.0.0
   in_app_purchase_repository:
     path: packages/in_app_purchase_repository
@@ -98,7 +97,6 @@ dependencies:
   very_good_analysis: ^6.0.0
   video_player_platform_interface: ^6.0.1
   visibility_detector: ^0.4.0+2
-  appwrite: 17.0.0
 
 dev_dependencies:
   bloc_test: ^9.0.3

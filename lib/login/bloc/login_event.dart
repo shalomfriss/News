@@ -18,26 +18,6 @@ class SendEmailLinkSubmitted extends LoginEvent with AnalyticsEventMixin {
   AnalyticsEvent get event => const AnalyticsEvent('SendEmailLinkSubmitted');
 }
 
-class LoginGoogleSubmitted extends LoginEvent with AnalyticsEventMixin {
-  @override
-  AnalyticsEvent get event => const AnalyticsEvent('LoginGoogleSubmitted');
-}
-
-class LoginAppleSubmitted extends LoginEvent with AnalyticsEventMixin {
-  @override
-  AnalyticsEvent get event => const AnalyticsEvent('LoginAppleSubmitted');
-}
-
-class LoginTwitterSubmitted extends LoginEvent with AnalyticsEventMixin {
-  @override
-  AnalyticsEvent get event => const AnalyticsEvent('LoginTwitterSubmitted');
-}
-
-class LoginFacebookSubmitted extends LoginEvent with AnalyticsEventMixin {
-  @override
-  AnalyticsEvent get event => const AnalyticsEvent('LoginFacebookSubmitted');
-}
-
 class LoginEmailPasswordSubmitted extends LoginEvent with AnalyticsEventMixin {
   const LoginEmailPasswordSubmitted({
     required this.email,
@@ -84,4 +64,74 @@ class ForgotPasswordSubmitted extends LoginEvent with AnalyticsEventMixin {
 
   @override
   List<Object> get props => [email];
+}
+
+class LoginWithGoogleSubmitted extends LoginEvent with AnalyticsEventMixin {
+  const LoginWithGoogleSubmitted();
+
+  @override
+  AnalyticsEvent get event => const AnalyticsEvent('LoginWithGoogleSubmitted');
+
+  @override
+  List<Object> get props => [];
+}
+
+class LoginWithAppleSubmitted extends LoginEvent with AnalyticsEventMixin {
+  const LoginWithAppleSubmitted();
+
+  @override
+  AnalyticsEvent get event => const AnalyticsEvent('LoginWithAppleSubmitted');
+
+  @override
+  List<Object> get props => [];
+}
+
+class LoginWithFacebookSubmitted extends LoginEvent with AnalyticsEventMixin {
+  const LoginWithFacebookSubmitted();
+
+  @override
+  AnalyticsEvent get event => const AnalyticsEvent('LoginWithFacebookSubmitted');
+
+  @override
+  List<Object> get props => [];
+}
+
+class LoginWithTwitterSubmitted extends LoginEvent with AnalyticsEventMixin {
+  const LoginWithTwitterSubmitted();
+
+  @override
+  AnalyticsEvent get event => const AnalyticsEvent('LoginWithTwitterSubmitted');
+
+  @override
+  List<Object> get props => [];
+}
+
+class LoginWithTikTokSubmitted extends LoginEvent with AnalyticsEventMixin {
+  const LoginWithTikTokSubmitted();
+
+  @override
+  AnalyticsEvent get event => const AnalyticsEvent('LoginWithTikTokSubmitted');
+
+  @override
+  List<Object> get props => [];
+}
+
+class LoginWithInstagramSubmitted extends LoginEvent with AnalyticsEventMixin {
+  const LoginWithInstagramSubmitted();
+
+  @override
+  AnalyticsEvent get event => const AnalyticsEvent('LoginWithInstagramSubmitted');
+
+  @override
+  List<Object> get props => [];
+}
+
+class LoginWithYouTubeSubmitted extends LoginEvent with AnalyticsEventMixin {
+  const LoginWithYouTubeSubmitted();
+
+  @override
+  AnalyticsEvent get event => const AnalyticsEvent('LoginWithYouTubeSubmitted');
+
+  @override
+  List<Object> get props => [];
 }

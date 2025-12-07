@@ -4,9 +4,11 @@ import 'package:authentication_client/authentication_client.dart';
 import 'package:deep_link_client/deep_link_client.dart';
 import 'package:equatable/equatable.dart';
 import 'package:demo_news_api/client.dart' hide User;
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_client/package_info_client.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:storage/storage.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:user_repository/user_repository.dart';
 
 part 'user_storage.dart';
@@ -99,70 +101,6 @@ class UserRepository {
           emailLink: deepLink.toString(),
         ),
       );
-
-  /// Starts the Sign In with Apple Flow.
-  ///
-  /// Throws a [LogInWithAppleCanceled] if the flow is canceled by the user.
-  /// Throws a [LogInWithAppleFailure] if an exception occurs.
-  Future<void> logInWithApple() async {
-    try {
-      await _authenticationClient.logInWithApple();
-    } on LogInWithAppleFailure {
-      rethrow;
-    } on LogInWithAppleCanceled {
-      rethrow;
-    } catch (error, stackTrace) {
-      Error.throwWithStackTrace(LogInWithAppleFailure(error), stackTrace);
-    }
-  }
-
-  /// Starts the Sign In with Google Flow.
-  ///
-  /// Throws a [LogInWithGoogleCanceled] if the flow is canceled by the user.
-  /// Throws a [LogInWithGoogleFailure] if an exception occurs.
-  Future<void> logInWithGoogle() async {
-    try {
-      await _authenticationClient.logInWithGoogle();
-    } on LogInWithGoogleFailure {
-      rethrow;
-    } on LogInWithGoogleCanceled {
-      rethrow;
-    } catch (error, stackTrace) {
-      Error.throwWithStackTrace(LogInWithGoogleFailure(error), stackTrace);
-    }
-  }
-
-  /// Starts the Sign In with Twitter Flow.
-  ///
-  /// Throws a [LogInWithTwitterCanceled] if the flow is canceled by the user.
-  /// Throws a [LogInWithTwitterFailure] if an exception occurs.
-  Future<void> logInWithTwitter() async {
-    try {
-      await _authenticationClient.logInWithTwitter();
-    } on LogInWithTwitterFailure {
-      rethrow;
-    } on LogInWithTwitterCanceled {
-      rethrow;
-    } catch (error, stackTrace) {
-      Error.throwWithStackTrace(LogInWithTwitterFailure(error), stackTrace);
-    }
-  }
-
-  /// Starts the Sign In with Facebook Flow.
-  ///
-  /// Throws a [LogInWithFacebookCanceled] if the flow is canceled by the user.
-  /// Throws a [LogInWithFacebookFailure] if an exception occurs.
-  Future<void> logInWithFacebook() async {
-    try {
-      await _authenticationClient.logInWithFacebook();
-    } on LogInWithFacebookFailure {
-      rethrow;
-    } on LogInWithFacebookCanceled {
-      rethrow;
-    } catch (error, stackTrace) {
-      Error.throwWithStackTrace(LogInWithFacebookFailure(error), stackTrace);
-    }
-  }
 
   /// Sends an authentication link to the provided [email].
   ///
@@ -310,6 +248,127 @@ class UserRepository {
       );
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(SendLoginEmailLinkFailure(error), stackTrace);
+    }
+  }
+
+  /// Signs in with Google OAuth.
+  ///
+  /// Throws a [LogInWithOAuthFailure] if an exception occurs.
+  Future<AuthResponse> logInWithGoogle() async {
+    try {
+      // await _authenticationClient.logInWithGoogle();
+
+      var supabase = Supabase.instance.client;
+      const webClientId = '335500197632-vkd7ebfp1q0hflautd2pi8iub7cj15sl.apps.googleusercontent.com';
+      const iosClientId = '335500197632-85boqmogkjqjv6ua6h23b7he64g2qe1b.apps.googleusercontent.com';
+
+      // Google sign in on Android will work without providing the Android
+      // Client ID registered on Google Cloud.
+
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId: iosClientId,
+        serverClientId: webClientId,
+      );
+      final googleUser = await googleSignIn.signIn();
+      final googleAuth = await googleUser!.authentication;
+      final accessToken = googleAuth.accessToken;
+      final idToken = googleAuth.idToken;
+
+      if (accessToken == null) {
+        throw 'No Access Token found.';
+      }
+      if (idToken == null) {
+        throw 'No ID Token found.';
+      }
+
+      return await supabase.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+        accessToken: accessToken,
+      );
+
+    } on LogInWithOAuthFailure {
+      rethrow;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(LogInWithOAuthFailure(error), stackTrace);
+    }
+  }
+
+  /// Signs in with Apple OAuth.
+  ///
+  /// Throws a [LogInWithOAuthFailure] if an exception occurs.
+  Future<void> logInWithApple() async {
+    try {
+      await _authenticationClient.logInWithApple();
+    } on LogInWithOAuthFailure {
+      rethrow;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(LogInWithOAuthFailure(error), stackTrace);
+    }
+  }
+
+  /// Signs in with Facebook OAuth.
+  ///
+  /// Throws a [LogInWithOAuthFailure] if an exception occurs.
+  Future<void> logInWithFacebook() async {
+    try {
+      await _authenticationClient.logInWithFacebook();
+    } on LogInWithOAuthFailure {
+      rethrow;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(LogInWithOAuthFailure(error), stackTrace);
+    }
+  }
+
+  /// Signs in with Twitter OAuth.
+  ///
+  /// Throws a [LogInWithOAuthFailure] if an exception occurs.
+  Future<void> logInWithTwitter() async {
+    try {
+      await _authenticationClient.logInWithTwitter();
+    } on LogInWithOAuthFailure {
+      rethrow;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(LogInWithOAuthFailure(error), stackTrace);
+    }
+  }
+
+  /// Signs in with TikTok OAuth.
+  ///
+  /// Throws a [LogInWithOAuthFailure] if an exception occurs.
+  Future<void> logInWithTikTok() async {
+    try {
+      await _authenticationClient.logInWithTikTok();
+    } on LogInWithOAuthFailure {
+      rethrow;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(LogInWithOAuthFailure(error), stackTrace);
+    }
+  }
+
+  /// Signs in with Instagram OAuth.
+  ///
+  /// Throws a [LogInWithOAuthFailure] if an exception occurs.
+  Future<void> logInWithInstagram() async {
+    try {
+      await _authenticationClient.logInWithInstagram();
+    } on LogInWithOAuthFailure {
+      rethrow;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(LogInWithOAuthFailure(error), stackTrace);
+    }
+  }
+
+  /// Signs in with YouTube OAuth.
+  ///
+  /// Throws a [LogInWithOAuthFailure] if an exception occurs.
+  Future<void> logInWithYouTube() async {
+    try {
+      await _authenticationClient.logInWithYouTube();
+    } on LogInWithOAuthFailure {
+      rethrow;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(LogInWithOAuthFailure(error), stackTrace);
     }
   }
 

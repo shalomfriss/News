@@ -23,11 +23,7 @@ class MockLoginBloc extends MockBloc<LoginEvent, LoginState>
 class MockAppBloc extends MockBloc<AppEvent, AppState> implements AppBloc {}
 
 void main() {
-  const loginButtonKey = Key('loginForm_emailLogin_appButton');
-  const signInWithGoogleButtonKey = Key('loginForm_googleLogin_appButton');
-  const signInWithAppleButtonKey = Key('loginForm_appleLogin_appButton');
-  const signInWithFacebookButtonKey = Key('loginForm_facebookLogin_appButton');
-  const signInWithTwitterButtonKey = Key('loginForm_twitterLogin_appButton');
+  const loginButtonKey = Key('loginForm_emailPasswordLogin_appButton');
   const loginFormCloseModalKey = Key('loginForm_closeModal_iconButton');
 
   group('LoginForm', () {
@@ -44,51 +40,6 @@ void main() {
     });
 
     group('adds', () {
-      testWidgets(
-          'LoginGoogleSubmitted to LoginBloc '
-          'when sign in with google button is pressed', (tester) async {
-        await tester.pumpApp(
-          BlocProvider.value(value: loginBloc, child: const LoginForm()),
-        );
-        await tester.ensureVisible(find.byKey(signInWithGoogleButtonKey));
-        await tester.tap(find.byKey(signInWithGoogleButtonKey));
-        verify(() => loginBloc.add(LoginGoogleSubmitted())).called(1);
-      });
-
-      testWidgets(
-          'LoginTwitterSubmitted to LoginBloc '
-          'when sign in with Twitter button is pressed', (tester) async {
-        await tester.pumpApp(
-          BlocProvider.value(value: loginBloc, child: const LoginForm()),
-        );
-        await tester.ensureVisible(find.byKey(signInWithTwitterButtonKey));
-        await tester.tap(find.byKey(signInWithTwitterButtonKey));
-        verify(() => loginBloc.add(LoginTwitterSubmitted())).called(1);
-      });
-
-      testWidgets(
-          'LoginFacebookSubmitted to LoginBloc '
-          'when sign in with Facebook button is pressed', (tester) async {
-        await tester.pumpApp(
-          BlocProvider.value(value: loginBloc, child: const LoginForm()),
-        );
-        await tester.ensureVisible(find.byKey(signInWithFacebookButtonKey));
-        await tester.tap(find.byKey(signInWithFacebookButtonKey));
-        verify(() => loginBloc.add(LoginFacebookSubmitted())).called(1);
-      });
-
-      testWidgets(
-          'LoginAppleSubmitted to LoginBloc '
-          'when sign in with apple button is pressed', (tester) async {
-        await tester.pumpApp(
-          BlocProvider.value(value: loginBloc, child: const LoginForm()),
-          platform: TargetPlatform.iOS,
-        );
-        await tester.ensureVisible(find.byKey(signInWithAppleButtonKey));
-        await tester.tap(find.byKey(signInWithAppleButtonKey));
-        verify(() => loginBloc.add(LoginAppleSubmitted())).called(1);
-      });
-
       testWidgets('AuthenticationFailure SnackBar when submission fails',
           (tester) async {
         whenListen(
@@ -117,36 +68,11 @@ void main() {
     });
 
     group('renders', () {
-      testWidgets('Sign in with Google and Apple on iOS', (tester) async {
-        await tester.pumpApp(
-          BlocProvider.value(value: loginBloc, child: const LoginForm()),
-          platform: TargetPlatform.iOS,
-        );
-        expect(find.byKey(signInWithAppleButtonKey), findsOneWidget);
-        expect(find.byKey(signInWithGoogleButtonKey), findsOneWidget);
-      });
-
-      testWidgets('only Sign in with Google on Android', (tester) async {
-        await tester.pumpApp(
-          BlocProvider.value(value: loginBloc, child: const LoginForm()),
-          platform: TargetPlatform.android,
-        );
-        expect(find.byKey(signInWithAppleButtonKey), findsNothing);
-        expect(find.byKey(signInWithGoogleButtonKey), findsOneWidget);
-      });
-
-      testWidgets('Sign in with Facebook', (tester) async {
+      testWidgets('email/password login button', (tester) async {
         await tester.pumpApp(
           BlocProvider.value(value: loginBloc, child: const LoginForm()),
         );
-        expect(find.byKey(signInWithFacebookButtonKey), findsOneWidget);
-      });
-
-      testWidgets('Sign in with Twitter', (tester) async {
-        await tester.pumpApp(
-          BlocProvider.value(value: loginBloc, child: const LoginForm()),
-        );
-        expect(find.byKey(signInWithTwitterButtonKey), findsOneWidget);
+        expect(find.byKey(loginButtonKey), findsOneWidget);
       });
     });
 

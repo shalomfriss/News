@@ -23,27 +23,27 @@ void main() {
       });
     });
 
-    group('LoginGoogleSubmitted', () {
+    group('LoginWithGoogleSubmitted', () {
       test('supports value comparisons', () {
-        expect(LoginGoogleSubmitted(), LoginGoogleSubmitted());
+        expect(LoginWithGoogleSubmitted(), LoginWithGoogleSubmitted());
       });
     });
 
-    group('LoginTwitterSubmitted', () {
+    group('LoginWithTwitterSubmitted', () {
       test('supports value comparisons', () {
-        expect(LoginTwitterSubmitted(), LoginTwitterSubmitted());
+        expect(LoginWithTwitterSubmitted(), LoginWithTwitterSubmitted());
       });
     });
 
-    group('LoginFacebookSubmitted', () {
+    group('LoginWithFacebookSubmitted', () {
       test('supports value comparisons', () {
-        expect(LoginFacebookSubmitted(), LoginFacebookSubmitted());
+        expect(LoginWithFacebookSubmitted(), LoginWithFacebookSubmitted());
       });
     });
 
-    group('LoginAppleSubmitted', () {
+    group('LoginWithAppleSubmitted', () {
       test('supports value comparisons', () {
-        expect(LoginAppleSubmitted(), LoginAppleSubmitted());
+        expect(LoginWithAppleSubmitted(), LoginWithAppleSubmitted());
       });
     });
   });

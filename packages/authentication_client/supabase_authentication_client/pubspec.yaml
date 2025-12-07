@@ -9,10 +9,8 @@ environment:
 dependencies:
   authentication_client:
     path: ../authentication_client
-  crypto: ^3.0.3
   flutter:
     sdk: flutter
-  sign_in_with_apple: ^6.1.0
   supabase_flutter: ^2.0.0
   token_storage:
     path: ../token_storage

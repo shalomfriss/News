@@ -37,70 +37,6 @@ class LogInWithEmailLinkFailure extends AuthenticationException {
   const LogInWithEmailLinkFailure(super.error);
 }
 
-/// {@template log_in_with_apple_failure}
-/// Thrown during the sign in with apple process if a failure occurs.
-/// {@endtemplate}
-class LogInWithAppleFailure extends AuthenticationException {
-  /// {@macro log_in_with_apple_failure}
-  const LogInWithAppleFailure(super.error);
-}
-
-/// {@template log_in_with_apple_canceled}
-/// Thrown during the sign in with apple process if it's canceled.
-/// {@endtemplate}
-class LogInWithAppleCanceled extends AuthenticationException {
-  /// {@macro log_in_with_apple_canceled}
-  const LogInWithAppleCanceled(super.error);
-}
-
-/// {@template log_in_with_google_failure}
-/// Thrown during the sign in with google process if a failure occurs.
-/// {@endtemplate}
-class LogInWithGoogleFailure extends AuthenticationException {
-  /// {@macro log_in_with_google_failure}
-  const LogInWithGoogleFailure(super.error);
-}
-
-/// {@template log_in_with_google_canceled}
-/// Thrown during the sign in with google process if it's canceled.
-/// {@endtemplate}
-class LogInWithGoogleCanceled extends AuthenticationException {
-  /// {@macro log_in_with_google_canceled}
-  const LogInWithGoogleCanceled(super.error);
-}
-
-/// {@template log_in_with_facebook_failure}
-/// Thrown during the sign in with Facebook process if a failure occurs.
-/// {@endtemplate}
-class LogInWithFacebookFailure extends AuthenticationException {
-  /// {@macro log_in_with_facebook_failure}
-  const LogInWithFacebookFailure(super.error);
-}
-
-/// {@template log_in_with_facebook_canceled}
-/// Thrown during the sign in with Facebook process if it's canceled.
-/// {@endtemplate}
-class LogInWithFacebookCanceled extends AuthenticationException {
-  /// {@macro log_in_with_facebook_canceled}
-  const LogInWithFacebookCanceled(super.error);
-}
-
-/// {@template log_in_with_twitter_failure}
-/// Thrown during the sign in with Twitter process if a failure occurs.
-/// {@endtemplate}
-class LogInWithTwitterFailure extends AuthenticationException {
-  /// {@macro log_in_with_twitter_failure}
-  const LogInWithTwitterFailure(super.error);
-}
-
-/// {@template log_in_with_twitter_canceled}
-/// Thrown during the sign in with Twitter process if it's canceled.
-/// {@endtemplate}
-class LogInWithTwitterCanceled extends AuthenticationException {
-  /// {@macro log_in_with_twitter_canceled}
-  const LogInWithTwitterCanceled(super.error);
-}
-
 /// {@template log_out_failure}
 /// Thrown during the logout process if a failure occurs.
 /// {@endtemplate}
@@ -117,6 +53,14 @@ class DeleteAccountFailure extends AuthenticationException {
   const DeleteAccountFailure(super.error);
 }
 
+/// {@template log_in_with_oauth_failure}
+/// Thrown during the OAuth sign in process if a failure occurs.
+/// {@endtemplate}
+class LogInWithOAuthFailure extends AuthenticationException {
+  /// {@macro log_in_with_oauth_failure}
+  const LogInWithOAuthFailure(super.error);
+}
+
 /// A generic Authentication Client Interface.
 abstract class AuthenticationClient {
   /// Stream of [AuthenticationUser] which will emit the current user when
@@ -124,26 +68,6 @@ abstract class AuthenticationClient {
   ///
   /// Emits [AuthenticationUser.anonymous] if the user is not authenticated.
   Stream<AuthenticationUser> get user;
-
-  /// Starts the Sign In with Apple Flow.
-  ///
-  /// Throws a [LogInWithAppleFailure] if an exception occurs.
-  Future<void> logInWithApple();
-
-  /// Starts the Sign In with Google Flow.
-  ///
-  /// Throws a [LogInWithGoogleFailure] if an exception occurs.
-  Future<void> logInWithGoogle();
-
-  /// Starts the Sign In with Facebook Flow.
-  ///
-  /// Throws a [LogInWithFacebookFailure] if an exception occurs.
-  Future<void> logInWithFacebook();
-
-  /// Starts the Sign In with Twitter Flow.
-  ///
-  /// Throws a [LogInWithTwitterFailure] if an exception occurs.
-  Future<void> logInWithTwitter();
 
   /// Sends an authentication link to the provided [email].
   ///
@@ -170,6 +94,41 @@ abstract class AuthenticationClient {
     required String email,
     required String emailLink,
   });
+
+  /// Signs in with Google.
+  ///
+  /// Throws a [LogInWithOAuthFailure] if an exception occurs.
+  Future<void> logInWithGoogle();
+
+  /// Signs in with Apple.
+  ///
+  /// Throws a [LogInWithOAuthFailure] if an exception occurs.
+  Future<void> logInWithApple();
+
+  /// Signs in with Facebook.
+  ///
+  /// Throws a [LogInWithOAuthFailure] if an exception occurs.
+  Future<void> logInWithFacebook();
+
+  /// Signs in with Twitter.
+  ///
+  /// Throws a [LogInWithOAuthFailure] if an exception occurs.
+  Future<void> logInWithTwitter();
+
+  /// Signs in with TikTok.
+  ///
+  /// Throws a [LogInWithOAuthFailure] if an exception occurs.
+  Future<void> logInWithTikTok();
+
+  /// Signs in with Instagram.
+  ///
+  /// Throws a [LogInWithOAuthFailure] if an exception occurs.
+  Future<void> logInWithInstagram();
+
+  /// Signs in with YouTube.
+  ///
+  /// Throws a [LogInWithOAuthFailure] if an exception occurs.
+  Future<void> logInWithYouTube();
 
   /// Signs out the current user which will emit
   /// [AuthenticationUser.anonymous] from the [user] Stream.

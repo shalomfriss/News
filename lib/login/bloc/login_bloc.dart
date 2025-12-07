@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:analytics_repository/analytics_repository.dart';
-import 'package:authentication_client/authentication_client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_inputs/form_inputs.dart';
@@ -17,13 +16,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         super(const LoginState()) {
     on<LoginEmailChanged>(_onEmailChanged);
     on<SendEmailLinkSubmitted>(_onSendEmailLinkSubmitted);
-    on<LoginGoogleSubmitted>(_onGoogleSubmitted);
-    on<LoginAppleSubmitted>(_onAppleSubmitted);
-    on<LoginTwitterSubmitted>(_onTwitterSubmitted);
-    on<LoginFacebookSubmitted>(_onFacebookSubmitted);
     on<LoginEmailPasswordSubmitted>(_onEmailPasswordSubmitted);
     on<SignUpEmailPasswordSubmitted>(_onSignUpEmailPasswordSubmitted);
     on<ForgotPasswordSubmitted>(_onForgotPasswordSubmitted);
+    on<LoginWithGoogleSubmitted>(_onLoginWithGoogleSubmitted);
+    on<LoginWithAppleSubmitted>(_onLoginWithAppleSubmitted);
+    on<LoginWithFacebookSubmitted>(_onLoginWithFacebookSubmitted);
+    on<LoginWithTwitterSubmitted>(_onLoginWithTwitterSubmitted);
+    on<LoginWithTikTokSubmitted>(_onLoginWithTikTokSubmitted);
+    on<LoginWithInstagramSubmitted>(_onLoginWithInstagramSubmitted);
+    on<LoginWithYouTubeSubmitted>(_onLoginWithYouTubeSubmitted);
   }
 
   final UserRepository _userRepository;
@@ -49,70 +51,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         email: state.email.value,
       );
       emit(state.copyWith(status: FormzSubmissionStatus.success));
-    } catch (error, stackTrace) {
-      emit(state.copyWith(status: FormzSubmissionStatus.failure));
-      addError(error, stackTrace);
-    }
-  }
-
-  Future<void> _onGoogleSubmitted(
-    LoginGoogleSubmitted event,
-    Emitter<LoginState> emit,
-  ) async {
-    emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
-    try {
-      await _userRepository.logInWithGoogle();
-      emit(state.copyWith(status: FormzSubmissionStatus.success));
-    } on LogInWithGoogleCanceled {
-      emit(state.copyWith(status: FormzSubmissionStatus.canceled));
-    } catch (error, stackTrace) {
-      emit(state.copyWith(status: FormzSubmissionStatus.failure));
-      addError(error, stackTrace);
-    }
-  }
-
-  Future<void> _onAppleSubmitted(
-    LoginAppleSubmitted event,
-    Emitter<LoginState> emit,
-  ) async {
-    emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
-    try {
-      await _userRepository.logInWithApple();
-      emit(state.copyWith(status: FormzSubmissionStatus.success));
-    } on LogInWithAppleCanceled {
-      emit(state.copyWith(status: FormzSubmissionStatus.canceled));
-    } catch (error, stackTrace) {
-      emit(state.copyWith(status: FormzSubmissionStatus.failure));
-      addError(error, stackTrace);
-    }
-  }
-
-  Future<void> _onTwitterSubmitted(
-    LoginTwitterSubmitted event,
-    Emitter<LoginState> emit,
-  ) async {
-    emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
-    try {
-      await _userRepository.logInWithTwitter();
-      emit(state.copyWith(status: FormzSubmissionStatus.success));
-    } on LogInWithTwitterCanceled {
-      emit(state.copyWith(status: FormzSubmissionStatus.canceled));
-    } catch (error, stackTrace) {
-      emit(state.copyWith(status: FormzSubmissionStatus.failure));
-      addError(error, stackTrace);
-    }
-  }
-
-  Future<void> _onFacebookSubmitted(
-    LoginFacebookSubmitted event,
-    Emitter<LoginState> emit,
-  ) async {
-    emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
-    try {
-      await _userRepository.logInWithFacebook();
-      emit(state.copyWith(status: FormzSubmissionStatus.success));
-    } on LogInWithFacebookCanceled {
-      emit(state.copyWith(status: FormzSubmissionStatus.canceled));
     } catch (error, stackTrace) {
       emit(state.copyWith(status: FormzSubmissionStatus.failure));
       addError(error, stackTrace);
@@ -163,6 +101,104 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       await _userRepository.sendPasswordRecoveryEmail(
         email: event.email,
       );
+      emit(state.copyWith(status: FormzSubmissionStatus.success));
+    } catch (error, stackTrace) {
+      emit(state.copyWith(status: FormzSubmissionStatus.failure));
+      addError(error, stackTrace);
+    }
+  }
+
+  Future<void> _onLoginWithGoogleSubmitted(
+    LoginWithGoogleSubmitted event,
+    Emitter<LoginState> emit,
+  ) async {
+    emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+    try {
+      await _userRepository.logInWithGoogle();
+      emit(state.copyWith(status: FormzSubmissionStatus.success));
+    } catch (error, stackTrace) {
+      emit(state.copyWith(status: FormzSubmissionStatus.failure));
+      addError(error, stackTrace);
+    }
+  }
+
+  Future<void> _onLoginWithAppleSubmitted(
+    LoginWithAppleSubmitted event,
+    Emitter<LoginState> emit,
+  ) async {
+    emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+    try {
+      await _userRepository.logInWithApple();
+      emit(state.copyWith(status: FormzSubmissionStatus.success));
+    } catch (error, stackTrace) {
+      emit(state.copyWith(status: FormzSubmissionStatus.failure));
+      addError(error, stackTrace);
+    }
+  }
+
+  Future<void> _onLoginWithFacebookSubmitted(
+    LoginWithFacebookSubmitted event,
+    Emitter<LoginState> emit,
+  ) async {
+    emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+    try {
+      await _userRepository.logInWithFacebook();
+      emit(state.copyWith(status: FormzSubmissionStatus.success));
+    } catch (error, stackTrace) {
+      emit(state.copyWith(status: FormzSubmissionStatus.failure));
+      addError(error, stackTrace);
+    }
+  }
+
+  Future<void> _onLoginWithTwitterSubmitted(
+    LoginWithTwitterSubmitted event,
+    Emitter<LoginState> emit,
+  ) async {
+    emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+    try {
+      await _userRepository.logInWithTwitter();
+      emit(state.copyWith(status: FormzSubmissionStatus.success));
+    } catch (error, stackTrace) {
+      emit(state.copyWith(status: FormzSubmissionStatus.failure));
+      addError(error, stackTrace);
+    }
+  }
+
+  Future<void> _onLoginWithTikTokSubmitted(
+    LoginWithTikTokSubmitted event,
+    Emitter<LoginState> emit,
+  ) async {
+    emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+    try {
+      await _userRepository.logInWithTikTok();
+      emit(state.copyWith(status: FormzSubmissionStatus.success));
+    } catch (error, stackTrace) {
+      emit(state.copyWith(status: FormzSubmissionStatus.failure));
+      addError(error, stackTrace);
+    }
+  }
+
+  Future<void> _onLoginWithInstagramSubmitted(
+    LoginWithInstagramSubmitted event,
+    Emitter<LoginState> emit,
+  ) async {
+    emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+    try {
+      await _userRepository.logInWithInstagram();
+      emit(state.copyWith(status: FormzSubmissionStatus.success));
+    } catch (error, stackTrace) {
+      emit(state.copyWith(status: FormzSubmissionStatus.failure));
+      addError(error, stackTrace);
+    }
+  }
+
+  Future<void> _onLoginWithYouTubeSubmitted(
+    LoginWithYouTubeSubmitted event,
+    Emitter<LoginState> emit,
+  ) async {
+    emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+    try {
+      await _userRepository.logInWithYouTube();
       emit(state.copyWith(status: FormzSubmissionStatus.success));
     } catch (error, stackTrace) {
       emit(state.copyWith(status: FormzSubmissionStatus.failure));

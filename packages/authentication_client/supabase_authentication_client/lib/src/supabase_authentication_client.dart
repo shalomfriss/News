@@ -1,10 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:math';
 
 import 'package:authentication_client/authentication_client.dart';
-import 'package:crypto/crypto.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:token_storage/token_storage.dart';
 
@@ -72,159 +68,6 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
 
   @override
   Stream<AuthenticationUser> get user => _userController.stream;
-
-  @override
-  Future<void> logInWithApple() async {
-    try {
-      // Generate a random nonce for security
-      final rawNonce = _generateNonce();
-      final hashedNonce = _sha256ofString(rawNonce);
-
-      // Request Apple Sign In credentials with the hashed nonce
-      final credential = await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
-        ],
-        nonce: hashedNonce,
-      );
-
-      // Get the identity token from Apple
-      final idToken = credential.identityToken;
-      if (idToken == null) {
-        throw LogInWithAppleFailure(
-          Exception('Apple Sign In failed: No identity token received'),
-        );
-      }
-
-      // Sign in to Supabase with the Apple credentials
-      await _client!.auth.signInWithIdToken(
-        provider: OAuthProvider.apple,
-        idToken: idToken,
-        nonce: rawNonce,
-      );
-    } catch (error, stackTrace) {
-      if (error is SignInWithAppleAuthorizationException) {
-        // User canceled the sign in
-        if (error.code == AuthorizationErrorCode.canceled) {
-          Error.throwWithStackTrace(
-            LogInWithAppleCanceled(error),
-            stackTrace,
-          );
-        }
-      }
-      Error.throwWithStackTrace(LogInWithAppleFailure(error), stackTrace);
-    }
-  }
-
-  /// Generates a cryptographically secure random nonce.
-  String _generateNonce([int length = 32]) {
-    const charset =
-        '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
-    final random = Random.secure();
-    return List.generate(length, (_) => charset[random.nextInt(charset.length)])
-        .join();
-  }
-
-  /// Returns the sha256 hash of [input] in hex notation.
-  String _sha256ofString(String input) {
-    final bytes = utf8.encode(input);
-    final digest = sha256.convert(bytes);
-    return digest.toString();
-  }
-
-  @override
-  Future<void> logInWithGoogle() async {
-    try {
-      // Use Supabase's built-in OAuth flow
-      // This launches a browser for authentication
-      final response = await _client!.auth.signInWithOAuth(
-        OAuthProvider.google,
-        redirectTo: 'io.supabase.flutterdemo://login-callback/',
-        authScreenLaunchMode: LaunchMode.externalApplication,
-      );
-
-      if (!response) {
-        throw LogInWithGoogleCanceled(
-          Exception('Google Sign In was canceled by user'),
-        );
-      }
-    } on LogInWithGoogleCanceled {
-      rethrow;
-    } catch (error, stackTrace) {
-      // Check if it's a cancellation error
-      if (error.toString().contains('cancel') ||
-          error.toString().contains('Cancel')) {
-        Error.throwWithStackTrace(
-          LogInWithGoogleCanceled(error),
-          stackTrace,
-        );
-      }
-      Error.throwWithStackTrace(LogInWithGoogleFailure(error), stackTrace);
-    }
-  }
-
-  @override
-  Future<void> logInWithFacebook() async {
-    try {
-      // Use Supabase's built-in OAuth flow
-      // This launches a browser for authentication
-      final response = await _client!.auth.signInWithOAuth(
-        OAuthProvider.facebook,
-        redirectTo: 'io.supabase.flutterdemo://login-callback/',
-        authScreenLaunchMode: LaunchMode.externalApplication,
-      );
-
-      if (!response) {
-        throw LogInWithFacebookCanceled(
-          Exception('Facebook login was canceled by user'),
-        );
-      }
-    } on LogInWithFacebookCanceled {
-      rethrow;
-    } catch (error, stackTrace) {
-      // Check if it's a cancellation error
-      if (error.toString().contains('cancel') ||
-          error.toString().contains('Cancel')) {
-        Error.throwWithStackTrace(
-          LogInWithFacebookCanceled(error),
-          stackTrace,
-        );
-      }
-      Error.throwWithStackTrace(LogInWithFacebookFailure(error), stackTrace);
-    }
-  }
-
-  @override
-  Future<void> logInWithTwitter() async {
-    try {
-      // Use Supabase's built-in OAuth flow
-      // This launches a browser for authentication
-      final response = await _client!.auth.signInWithOAuth(
-        OAuthProvider.twitter,
-        redirectTo: 'io.supabase.flutterdemo://login-callback/',
-        authScreenLaunchMode: LaunchMode.externalApplication,
-      );
-
-      if (!response) {
-        throw LogInWithTwitterCanceled(
-          Exception('Twitter login was canceled by user'),
-        );
-      }
-    } on LogInWithTwitterCanceled {
-      rethrow;
-    } catch (error, stackTrace) {
-      // Check if it's a cancellation error
-      if (error.toString().contains('cancel') ||
-          error.toString().contains('Cancel')) {
-        Error.throwWithStackTrace(
-          LogInWithTwitterCanceled(error),
-          stackTrace,
-        );
-      }
-      Error.throwWithStackTrace(LogInWithTwitterFailure(error), stackTrace);
-    }
-  }
 
   /// Signs in with email and password.
   Future<void> logInWithEmailPassword({
@@ -382,6 +225,99 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
       await _tokenStorage.clearToken();
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(DeleteAccountFailure(error), stackTrace);
+    }
+  }
+
+  @override
+  Future<void> logInWithGoogle() async {
+    try {
+      await _client!.auth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: 'com.demo.news.dev://login-callback/',
+      );
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(LogInWithOAuthFailure(error), stackTrace);
+    }
+  }
+
+  @override
+  Future<void> logInWithApple() async {
+    try {
+      await _client!.auth.signInWithOAuth(
+        OAuthProvider.apple,
+        redirectTo: 'com.demo.news.dev://login-callback/',
+      );
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(LogInWithOAuthFailure(error), stackTrace);
+    }
+  }
+
+  @override
+  Future<void> logInWithFacebook() async {
+    try {
+      await _client!.auth.signInWithOAuth(
+        OAuthProvider.facebook,
+        redirectTo: 'com.demo.news.dev://login-callback/',
+      );
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(LogInWithOAuthFailure(error), stackTrace);
+    }
+  }
+
+  @override
+  Future<void> logInWithTwitter() async {
+    try {
+      await _client!.auth.signInWithOAuth(
+        OAuthProvider.twitter,
+        redirectTo: 'com.demo.news.dev://login-callback/',
+      );
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(LogInWithOAuthFailure(error), stackTrace);
+    }
+  }
+
+  @override
+  Future<void> logInWithTikTok() async {
+    // TikTok is not directly supported by Supabase OAuth providers.
+    // To enable TikTok login, you need to:
+    // 1. Set up a custom OAuth flow using TikTok's API
+    // 2. Create a Supabase Edge Function to handle the OAuth callback
+    // 3. Use the edge function to exchange the TikTok code for user data
+    // For now, this throws an error indicating the feature is not yet implemented.
+    throw LogInWithOAuthFailure(
+      UnsupportedError(
+        'TikTok OAuth is not yet supported. Please configure a custom OAuth flow in Supabase.',
+      ),
+    );
+  }
+
+  @override
+  Future<void> logInWithInstagram() async {
+    try {
+      // Instagram OAuth - uses Facebook OAuth (Instagram is owned by Meta)
+      // Note: You need to configure Facebook OAuth in Supabase with Instagram permissions
+      // This provides user authentication via Facebook, which can include Instagram access
+      await _client!.auth.signInWithOAuth(
+        OAuthProvider.facebook,
+        redirectTo: 'com.demo.news.dev://login-callback/',
+      );
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(LogInWithOAuthFailure(error), stackTrace);
+    }
+  }
+
+  @override
+  Future<void> logInWithYouTube() async {
+    try {
+      // YouTube OAuth - uses Google OAuth (YouTube is owned by Google)
+      // Note: This provides user authentication via Google, which includes YouTube access
+      // You can request YouTube API scopes separately if needed
+      await _client!.auth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: 'com.demo.news.dev://login-callback/',
+      );
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(LogInWithOAuthFailure(error), stackTrace);
     }
   }
 

@@ -1,7 +1,6 @@
 import 'package:ads_consent_client/ads_consent_client.dart';
 import 'package:analytics_repository/analytics_repository.dart';
 import 'package:app_ui/app_ui.dart';
-import 'package:appwrite/appwrite.dart';
 import 'package:article_repository/article_repository.dart';
 import 'package:demo_news/ads/ads.dart';
 import 'package:demo_news/analytics/analytics.dart';
@@ -19,6 +18,7 @@ import 'package:news_repository/news_repository.dart';
 import 'package:notifications_repository/notifications_repository.dart';
 import 'package:platform/platform.dart';
 import 'package:stories_repository/stories_repository.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:user_repository/user_repository.dart';
 
 class App extends StatefulWidget {
@@ -32,7 +32,6 @@ class App extends StatefulWidget {
     required AdsConsentClient adsConsentClient,
     required StoriesRepository storiesRepository,
     required User user,
-    this.account,
     super.key,
   })  : _userRepository = userRepository,
         _newsRepository = newsRepository,
@@ -53,13 +52,22 @@ class App extends StatefulWidget {
   final AdsConsentClient _adsConsentClient;
   final StoriesRepository _storiesRepository;
   final User _user;
-  final Account? account;
 
   @override
   State<App> createState() => _AppState();
 }
 
 class _AppState extends State<App> {
+  String? _userId;
+
+  @override initState() {
+    super.initState();
+  Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+    _userId = data.session?.user.id;
+    print(">>>> " + (_userId ?? "No User"));
+  });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(

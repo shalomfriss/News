@@ -67,17 +67,9 @@ class _LoginContent extends StatelessWidget {
                 const SizedBox(height: AppSpacing.sm),
                 const _LoginSubtitle(),
                 const SizedBox(height: AppSpacing.lg),
-                _GoogleLoginButton(),
-                if (theme.platform == TargetPlatform.iOS) ...[
-                  const SizedBox(height: AppSpacing.lg),
-                  _AppleLoginButton(),
-                ],
-                const SizedBox(height: AppSpacing.lg),
-                _FacebookLoginButton(),
-                const SizedBox(height: AppSpacing.lg),
-                _TwitterLoginButton(),
-                const SizedBox(height: AppSpacing.lg),
                 _ContinueWithEmailPasswordLoginButton(),
+                const SizedBox(height: AppSpacing.md),
+                const _SocialLoginButtons(),
               ],
             ),
           ),
@@ -127,84 +119,6 @@ class _LoginSubtitle extends StatelessWidget {
   }
 }
 
-class _AppleLoginButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AppButton.black(
-      key: const Key('loginForm_appleLogin_appButton'),
-      onPressed: () => context.read<LoginBloc>().add(LoginAppleSubmitted()),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Assets.icons.apple.svg(),
-          const SizedBox(width: AppSpacing.lg),
-          Padding(
-            padding: const EdgeInsets.only(top: AppSpacing.xs),
-            child: Assets.images.continueWithApple.svg(),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _GoogleLoginButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AppButton.outlinedWhite(
-      key: const Key('loginForm_googleLogin_appButton'),
-      onPressed: () => context.read<LoginBloc>().add(LoginGoogleSubmitted()),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Assets.icons.google.svg(),
-          const SizedBox(width: AppSpacing.lg),
-          Padding(
-            padding: const EdgeInsets.only(top: AppSpacing.xxs),
-            child: Assets.images.continueWithGoogle.svg(),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _FacebookLoginButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AppButton.blueDress(
-      key: const Key('loginForm_facebookLogin_appButton'),
-      onPressed: () => context.read<LoginBloc>().add(LoginFacebookSubmitted()),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Assets.icons.facebook.svg(),
-          const SizedBox(width: AppSpacing.lg),
-          Assets.images.continueWithFacebook.svg(),
-        ],
-      ),
-    );
-  }
-}
-
-class _TwitterLoginButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AppButton.crystalBlue(
-      key: const Key('loginForm_twitterLogin_appButton'),
-      onPressed: () => context.read<LoginBloc>().add(LoginTwitterSubmitted()),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Assets.icons.twitter.svg(),
-          const SizedBox(width: AppSpacing.lg),
-          Assets.images.continueWithTwitter.svg(),
-        ],
-      ),
-    );
-  }
-}
-
 class _ContinueWithEmailPasswordLoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -222,6 +136,132 @@ class _ContinueWithEmailPasswordLoginButton extends StatelessWidget {
           const Text('Sign in with Email & Password'),
         ],
       ),
+    );
+  }
+}
+
+class _SocialLoginButtons extends StatelessWidget {
+  const _SocialLoginButtons();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const _Divider(),
+        const SizedBox(height: AppSpacing.md),
+        _SocialLoginButton(
+          key: const Key('loginForm_googleLogin_appButton'),
+          icon: Assets.icons.google.svg(height: 24, width: 24),
+          label: 'Continue with Google',
+          onPressed: () => context.read<LoginBloc>().add(
+                const LoginWithGoogleSubmitted(),
+              ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        _SocialLoginButton(
+          key: const Key('loginForm_appleLogin_appButton'),
+          icon: Assets.icons.apple.svg(height: 24, width: 24),
+          label: 'Continue with Apple',
+          onPressed: () => context.read<LoginBloc>().add(
+                const LoginWithAppleSubmitted(),
+              ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        _SocialLoginButton(
+          key: const Key('loginForm_facebookLogin_appButton'),
+          icon: Assets.icons.facebook.svg(height: 24, width: 24),
+          label: 'Continue with Facebook',
+          onPressed: () => context.read<LoginBloc>().add(
+                const LoginWithFacebookSubmitted(),
+              ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        _SocialLoginButton(
+          key: const Key('loginForm_twitterLogin_appButton'),
+          icon: Assets.icons.twitter.svg(height: 24, width: 24),
+          label: 'Continue with Twitter',
+          onPressed: () => context.read<LoginBloc>().add(
+                const LoginWithTwitterSubmitted(),
+              ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        _SocialLoginButton(
+          key: const Key('loginForm_tiktokLogin_appButton'),
+          icon: Assets.icons.tiktok.svg(height: 24, width: 24),
+          label: 'Continue with TikTok',
+          onPressed: () => context.read<LoginBloc>().add(
+                const LoginWithTikTokSubmitted(),
+              ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        _SocialLoginButton(
+          key: const Key('loginForm_instagramLogin_appButton'),
+          icon: Assets.icons.instagram.svg(height: 24, width: 24),
+          label: 'Continue with Instagram',
+          onPressed: () => context.read<LoginBloc>().add(
+                const LoginWithInstagramSubmitted(),
+              ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        _SocialLoginButton(
+          key: const Key('loginForm_youtubeLogin_appButton'),
+          icon: Assets.icons.youtube.svg(height: 24, width: 24),
+          label: 'Continue with YouTube',
+          onPressed: () => context.read<LoginBloc>().add(
+                const LoginWithYouTubeSubmitted(),
+              ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SocialLoginButton extends StatelessWidget {
+  const _SocialLoginButton({
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+    super.key,
+  });
+
+  final Widget icon;
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppButton.outlinedTransparentDarkAqua(
+      onPressed: onPressed,
+      textStyle: Theme.of(context).textTheme.titleMedium,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          icon,
+          const SizedBox(width: AppSpacing.lg),
+          Text(label),
+        ],
+      ),
+    );
+  }
+}
+
+class _Divider extends StatelessWidget {
+  const _Divider();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const Expanded(child: Divider()),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+          child: Text(
+            'OR',
+            style: Theme.of(context).textTheme.labelSmall,
+          ),
+        ),
+        const Expanded(child: Divider()),
+      ],
     );
   }
 }

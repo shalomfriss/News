@@ -41,11 +41,11 @@ class PostGrid extends StatelessWidget {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       sliver: SliverGrid(
-        gridDelegate: CustomMaxCrossAxisDelegate(
-          maxCrossAxisExtent: deviceWidth / 2 - (AppSpacing.md / 2),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
           mainAxisSpacing: AppSpacing.md,
           crossAxisSpacing: AppSpacing.md,
-          childAspectRatio: 3 / 2,
+          childAspectRatio: 3 / 4,
         ),
         delegate: SliverChildBuilderDelegate(
           (BuildContext context, int index) {

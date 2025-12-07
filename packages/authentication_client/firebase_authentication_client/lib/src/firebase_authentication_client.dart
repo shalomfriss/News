@@ -63,7 +63,7 @@ class FirebaseAuthenticationClient implements AuthenticationClient {
 
   /// Starts the Sign In with Apple Flow.
   ///
-  /// Throws a [LogInWithAppleFailure] if an exception occurs.
+  /// Throws a [LogInWithOAuthFailure] if an exception occurs.
   @override
   Future<void> logInWithApple() async {
     try {
@@ -80,20 +80,19 @@ class FirebaseAuthenticationClient implements AuthenticationClient {
       );
       await _firebaseAuth.signInWithCredential(credential);
     } catch (error, stackTrace) {
-      Error.throwWithStackTrace(LogInWithAppleFailure(error), stackTrace);
+      Error.throwWithStackTrace(LogInWithOAuthFailure(error), stackTrace);
     }
   }
 
   /// Starts the Sign In with Google Flow.
   ///
-  /// Throws a [LogInWithGoogleCanceled] if the flow is canceled by the user.
-  /// Throws a [LogInWithGoogleFailure] if an exception occurs.
+  /// Throws a [LogInWithOAuthFailure] if an exception occurs.
   @override
   Future<void> logInWithGoogle() async {
     try {
       final googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
-        throw LogInWithGoogleCanceled(
+        throw LogInWithOAuthFailure(
           Exception('Sign in with Google canceled'),
         );
       }
@@ -103,34 +102,31 @@ class FirebaseAuthenticationClient implements AuthenticationClient {
         idToken: googleAuth.idToken,
       );
       await _firebaseAuth.signInWithCredential(credential);
-    } on LogInWithGoogleCanceled {
-      rethrow;
     } catch (error, stackTrace) {
-      Error.throwWithStackTrace(LogInWithGoogleFailure(error), stackTrace);
+      Error.throwWithStackTrace(LogInWithOAuthFailure(error), stackTrace);
     }
   }
 
   /// Starts the Sign In with Facebook Flow.
   ///
-  /// Throws a [LogInWithFacebookCanceled] if the flow is canceled by the user.
-  /// Throws a [LogInWithFacebookFailure] if an exception occurs.
+  /// Throws a [LogInWithOAuthFailure] if an exception occurs.
   @override
   Future<void> logInWithFacebook() async {
     try {
       final loginResult = await _facebookAuth.login();
       if (loginResult.status == LoginStatus.cancelled) {
-        throw LogInWithFacebookCanceled(
+        throw LogInWithOAuthFailure(
           Exception('Sign in with Facebook canceled'),
         );
       } else if (loginResult.status == LoginStatus.failed) {
-        throw LogInWithFacebookFailure(
+        throw LogInWithOAuthFailure(
           Exception(loginResult.message),
         );
       }
 
       final accessToken = loginResult.accessToken?.tokenString;
       if (accessToken == null) {
-        throw LogInWithFacebookFailure(
+        throw LogInWithOAuthFailure(
           Exception(
             'Sign in with Facebook failed due to an empty access token',
           ),
@@ -141,10 +137,8 @@ class FirebaseAuthenticationClient implements AuthenticationClient {
           firebase_auth.FacebookAuthProvider.credential(accessToken);
 
       await _firebaseAuth.signInWithCredential(credential);
-    } on LogInWithFacebookCanceled {
-      rethrow;
     } catch (error, stackTrace) {
-      Error.throwWithStackTrace(LogInWithFacebookFailure(error), stackTrace);
+      Error.throwWithStackTrace(LogInWithOAuthFailure(error), stackTrace);
     }
   }
 
@@ -157,11 +151,11 @@ class FirebaseAuthenticationClient implements AuthenticationClient {
     try {
       final loginResult = await _twitterLogin.loginV2();
       if (loginResult.status == TwitterLoginStatus.cancelledByUser) {
-        throw LogInWithTwitterCanceled(
+        throw LogInWithOAuthFailure(
           Exception('Sign in with Twitter canceled'),
         );
       } else if (loginResult.status == TwitterLoginStatus.error) {
-        throw LogInWithTwitterFailure(
+        throw LogInWithOAuthFailure(
           Exception(loginResult.errorMessage),
         );
       }
@@ -169,7 +163,7 @@ class FirebaseAuthenticationClient implements AuthenticationClient {
       final authToken = loginResult.authToken;
       final authTokenSecret = loginResult.authTokenSecret;
       if (authToken == null || authTokenSecret == null) {
-        throw LogInWithTwitterFailure(
+        throw LogInWithOAuthFailure(
           Exception(
             'Sign in with Twitter failed due to invalid auth token or secret',
           ),
@@ -182,11 +176,40 @@ class FirebaseAuthenticationClient implements AuthenticationClient {
       );
 
       await _firebaseAuth.signInWithCredential(credential);
-    } on LogInWithTwitterCanceled {
-      rethrow;
     } catch (error, stackTrace) {
-      Error.throwWithStackTrace(LogInWithTwitterFailure(error), stackTrace);
+      Error.throwWithStackTrace(LogInWithOAuthFailure(error), stackTrace);
     }
+  }
+
+  /// Signs in with TikTok.
+  ///
+  /// Throws a [LogInWithOAuthFailure] if an exception occurs.
+  @override
+  Future<void> logInWithTikTok() async {
+    // TikTok OAuth is not directly supported by Firebase Auth
+    throw LogInWithOAuthFailure(
+      UnsupportedError('TikTok OAuth is not supported with Firebase'),
+    );
+  }
+
+  /// Signs in with Instagram (via Facebook OAuth).
+  ///
+  /// Throws a [LogInWithOAuthFailure] if an exception occurs.
+  @override
+  Future<void> logInWithInstagram() async {
+    // Instagram login uses Facebook OAuth (Instagram is owned by Meta)
+    // This will authenticate the user via Facebook, which can include Instagram access
+    await logInWithFacebook();
+  }
+
+  /// Signs in with YouTube (via Google OAuth).
+  ///
+  /// Throws a [LogInWithOAuthFailure] if an exception occurs.
+  @override
+  Future<void> logInWithYouTube() async {
+    // YouTube login uses Google OAuth (YouTube is owned by Google)
+    // This will authenticate the user via Google, which includes YouTube access
+    await logInWithGoogle();
   }
 
   /// Sends an authentication link to the provided [email].
