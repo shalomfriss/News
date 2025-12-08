@@ -20,7 +20,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
 
     _userSubscription = userRepository.user
         .handleError(addError)
-        .listen((user) => add(UserProfileUpdated(user)));
+        .listen((User user) => add(UserProfileUpdated(user)));
   }
 
   final NotificationsRepository _notificationsRepository;

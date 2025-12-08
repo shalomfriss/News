@@ -8,7 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_client/package_info_client.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:storage/storage.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' hide User;
 import 'package:user_repository/user_repository.dart';
 
 part 'user_storage.dart';

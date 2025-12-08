@@ -18,7 +18,7 @@ import 'package:news_repository/news_repository.dart';
 import 'package:notifications_repository/notifications_repository.dart';
 import 'package:platform/platform.dart';
 import 'package:stories_repository/stories_repository.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' hide User;
 import 'package:user_repository/user_repository.dart';
 
 class App extends StatefulWidget {
