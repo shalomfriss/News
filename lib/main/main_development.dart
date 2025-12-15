@@ -1,5 +1,5 @@
 import 'package:ads_consent_client/ads_consent_client.dart';
-import 'package:firebase_authentication_client/firebase_authentication_client.dart';
+import 'package:supabase_authentication_client/supabase_authentication_client.dart';
 import 'package:article_repository/article_repository.dart';
 import 'package:deep_link_client/deep_link_client.dart';
 import 'package:firebase_deep_link_client/firebase_deep_link_client.dart';
@@ -54,14 +54,11 @@ void main() {
 
       final userStorage = UserStorage(storage: persistentStorage);
 
-      // Initialize Supabase for stories
-      await Supabase.initialize(
-        url: 'https://nxfiplvukpehppydgseh.supabase.co',
-        anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54ZmlwbHZ1a3BlaHBweWRnc2VoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NjY3NTgsImV4cCI6MjA3OTE0Mjc1OH0.gQqZYmu2Cj_s5ljX3kKqelt1kuZbb2Z0C0WvBQx5JGE',
-      );
-
-      final authenticationClient = FirebaseAuthenticationClient(
+      // Initialize Supabase authentication client
+      final authenticationClient = SupabaseAuthenticationClient(
         tokenStorage: tokenStorage,
+        supabaseUrl: 'https://nxfiplvukpehppydgseh.supabase.co',
+        supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54ZmlwbHZ1a3BlaHBweWRnc2VoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NjY3NTgsImV4cCI6MjA3OTE0Mjc1OH0.gQqZYmu2Cj_s5ljX3kKqelt1kuZbb2Z0C0WvBQx5JGE',
       );
 
       final notificationsClient = FirebaseNotificationsClient(

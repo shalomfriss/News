@@ -157,60 +157,60 @@ class _SocialLoginButtons extends StatelessWidget {
                 const LoginWithGoogleSubmitted(),
               ),
         ),
-        const SizedBox(height: AppSpacing.sm),
-        _SocialLoginButton(
-          key: const Key('loginForm_appleLogin_appButton'),
-          icon: Assets.icons.apple.svg(height: 24, width: 24),
-          label: 'Continue with Apple',
-          onPressed: () => context.read<LoginBloc>().add(
-                const LoginWithAppleSubmitted(),
-              ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        _SocialLoginButton(
-          key: const Key('loginForm_facebookLogin_appButton'),
-          icon: Assets.icons.facebook.svg(height: 24, width: 24),
-          label: 'Continue with Facebook',
-          onPressed: () => context.read<LoginBloc>().add(
-                const LoginWithFacebookSubmitted(),
-              ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        _SocialLoginButton(
-          key: const Key('loginForm_twitterLogin_appButton'),
-          icon: Assets.icons.twitter.svg(height: 24, width: 24),
-          label: 'Continue with Twitter',
-          onPressed: () => context.read<LoginBloc>().add(
-                const LoginWithTwitterSubmitted(),
-              ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        _SocialLoginButton(
-          key: const Key('loginForm_tiktokLogin_appButton'),
-          icon: Assets.icons.tiktok.svg(height: 24, width: 24),
-          label: 'Continue with TikTok',
-          onPressed: () => context.read<LoginBloc>().add(
-                const LoginWithTikTokSubmitted(),
-              ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        _SocialLoginButton(
-          key: const Key('loginForm_instagramLogin_appButton'),
-          icon: Assets.icons.instagram.svg(height: 24, width: 24),
-          label: 'Continue with Instagram',
-          onPressed: () => context.read<LoginBloc>().add(
-                const LoginWithInstagramSubmitted(),
-              ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        _SocialLoginButton(
-          key: const Key('loginForm_youtubeLogin_appButton'),
-          icon: Assets.icons.youtube.svg(height: 24, width: 24),
-          label: 'Continue with YouTube',
-          onPressed: () => context.read<LoginBloc>().add(
-                const LoginWithYouTubeSubmitted(),
-              ),
-        ),
+        // const SizedBox(height: AppSpacing.sm),
+        // _SocialLoginButton(
+        //   key: const Key('loginForm_appleLogin_appButton'),
+        //   icon: Assets.icons.apple.svg(height: 24, width: 24),
+        //   label: 'Continue with Apple',
+        //   onPressed: () => context.read<LoginBloc>().add(
+        //         const LoginWithAppleSubmitted(),
+        //       ),
+        // ),
+        // const SizedBox(height: AppSpacing.sm),
+        // _SocialLoginButton(
+        //   key: const Key('loginForm_facebookLogin_appButton'),
+        //   icon: Assets.icons.facebook.svg(height: 24, width: 24),
+        //   label: 'Continue with Facebook',
+        //   onPressed: () => context.read<LoginBloc>().add(
+        //         const LoginWithFacebookSubmitted(),
+        //       ),
+        // ),
+        // const SizedBox(height: AppSpacing.sm),
+        // _SocialLoginButton(
+        //   key: const Key('loginForm_twitterLogin_appButton'),
+        //   icon: Assets.icons.twitter.svg(height: 24, width: 24),
+        //   label: 'Continue with Twitter',
+        //   onPressed: () => context.read<LoginBloc>().add(
+        //         const LoginWithTwitterSubmitted(),
+        //       ),
+        // ),
+        // const SizedBox(height: AppSpacing.sm),
+        // _SocialLoginButton(
+        //   key: const Key('loginForm_tiktokLogin_appButton'),
+        //   icon: Assets.icons.tiktok.svg(height: 24, width: 24),
+        //   label: 'Continue with TikTok',
+        //   onPressed: () => context.read<LoginBloc>().add(
+        //         const LoginWithTikTokSubmitted(),
+        //       ),
+        // ),
+        // const SizedBox(height: AppSpacing.sm),
+        // _SocialLoginButton(
+        //   key: const Key('loginForm_instagramLogin_appButton'),
+        //   icon: Assets.icons.instagram.svg(height: 24, width: 24),
+        //   label: 'Continue with Instagram',
+        //   onPressed: () => context.read<LoginBloc>().add(
+        //         const LoginWithInstagramSubmitted(),
+        //       ),
+        // ),
+        // const SizedBox(height: AppSpacing.sm),
+        // _SocialLoginButton(
+        //   key: const Key('loginForm_youtubeLogin_appButton'),
+        //   icon: Assets.icons.youtube.svg(height: 24, width: 24),
+        //   label: 'Continue with YouTube',
+        //   onPressed: () => context.read<LoginBloc>().add(
+        //         const LoginWithYouTubeSubmitted(),
+        //       ),
+        // ),
       ],
     );
   }
