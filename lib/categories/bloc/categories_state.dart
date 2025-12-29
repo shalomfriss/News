@@ -37,14 +37,18 @@ class CategoriesState extends Equatable {
   CategoriesState copyWith({
     CategoriesStatus? status,
     List<Category>? categories,
-    Category? selectedCategory,
+    Object? selectedCategory = _undefined,
   }) {
     return CategoriesState(
       status: status ?? this.status,
       categories: categories ?? this.categories,
-      selectedCategory: selectedCategory ?? this.selectedCategory,
+      selectedCategory: selectedCategory == _undefined
+          ? this.selectedCategory
+          : selectedCategory as Category?,
     );
   }
 
   Map<String, dynamic> toJson() => _$CategoriesStateToJson(this);
 }
+
+const _undefined = Object();

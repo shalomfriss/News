@@ -71,13 +71,10 @@ class StoriesRepository {
     String? category,
   }) async {
     try {
-      print('📚 Fetching stories from Supabase (limit: $limit, offset: $offset)');
-
       // Build the query
       var query = _supabaseClient
           .from('stories')
           .select();
-      print('📚 Fetching stories from Supabase (limit: $limit, offset: $offset)');
 
       // Add category filter if provided (must be before range)
       if (category != null && category.isNotEmpty) {
@@ -85,18 +82,13 @@ class StoriesRepository {
       }
 
       // Execute the query with pagination
-      print('📚 Executing query...');
       final response = await query
           .range(offset, offset + limit - 1) as List<dynamic>;
-
-      print('📚 Received ${response.length} stories from Supabase');
 
       // Parse the response
       final stories = response
           .map((json) => Story.fromJson(json as Map<String, dynamic>))
           .toList();
-
-      print('📚 Successfully parsed ${stories.length} stories');
 
       // If we got a full page of results, there might be more
       final hasMore = stories.length == limit;
@@ -106,23 +98,7 @@ class StoriesRepository {
         totalCount: offset + stories.length,
         hasMore: hasMore,
       );
-
-      // Add category filter if provided (must be before range)
-      if (category != null && category.isNotEmpty) {
-        query = query.eq('category', category);
-      }
-
-      // Execute the query with pagination
-      // print('📚 Executing query...');
-      // final response = await query
-      //     .range(offset, offset + limit - 1) as List<dynamic>;
-      //
-      // print('📚 Received ${response.length} stories from Supabase');
-
-
     } catch (error, stackTrace) {
-      print('❌ Error fetching stories: $error');
-      print('Stack trace: $stackTrace');
       Error.throwWithStackTrace(GetStoriesFailure(error), stackTrace);
     }
   }
@@ -136,8 +112,60 @@ class StoriesRepository {
           .eq('id', id)
           .single();
 
-      return Story.fromJson(response as Map<String, dynamic>);
+      return Story.fromJson(response);
     } catch (error, stackTrace) {
+      Error.throwWithStackTrace(GetStoriesFailure(error), stackTrace);
+    }
+  }
+
+  /// Fetches distinct categories from stories.
+  Future<List<String>> getCategories() async {
+    try {
+      final response = await _supabaseClient
+          .from('stories')
+          .select('category')
+          .not('category', 'is', null);
+
+      final categories = <String>{};
+      for (final item in response as List<dynamic>) {
+        final category = item['category'] as String?;
+        if (category != null && category.isNotEmpty) {
+          categories.add(category);
+        }
+      }
+
+      return categories.toList()..sort();
+    } catch (error, stackTrace) {
+      print('❌ Error fetching categories: $error');
+      Error.throwWithStackTrace(GetStoriesFailure(error), stackTrace);
+    }
+  }
+
+  /// Searches stories by term in summary, accuracy_assessment, and other fields.
+  Future<List<Story>> searchStories({required String term}) async {
+    try {
+      if (term.isEmpty) {
+        return [];
+      }
+
+      final response = await _supabaseClient
+          .from('stories')
+          .select()
+          .or(
+            'summary.ilike.%$term%,'
+            'accuracy_assessment.ilike.%$term%,'
+            'propaganda_indicators.ilike.%$term%',
+          )
+          .order('created_at', ascending: false)
+          .limit(20);
+
+      final stories = (response as List<dynamic>)
+          .map((json) => Story.fromJson(json as Map<String, dynamic>))
+          .toList();
+
+      return stories;
+    } catch (error, stackTrace) {
+      print('❌ Error searching stories: $error');
       Error.throwWithStackTrace(GetStoriesFailure(error), stackTrace);
     }
   }

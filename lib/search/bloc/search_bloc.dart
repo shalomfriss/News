@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_blocks/news_blocks.dart';
 import 'package:news_repository/news_repository.dart';
+import 'package:stories_repository/stories_repository.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 part 'search_event.dart';
@@ -25,7 +26,9 @@ EventTransformer<Event> restartableDebounce<Event>(
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc({
     required NewsRepository newsRepository,
+    required StoriesRepository storiesRepository,
   })  : _newsRepository = newsRepository,
+        _storiesRepository = storiesRepository,
         super(const SearchState.initial()) {
     on<SearchTermChanged>(
       (event, emit) async {
@@ -41,6 +44,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   }
 
   final NewsRepository _newsRepository;
+  final StoriesRepository _storiesRepository;
 
   FutureOr<void> _onEmptySearchRequested(
     SearchTermChanged event,
@@ -53,11 +57,17 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       ),
     );
     try {
-      final popularSearch = await _newsRepository.popularSearch();
+      // Get recent stories when search is empty
+      final response = await _storiesRepository.getStories(
+        limit: 20,
+        offset: 0,
+      );
+
       emit(
         state.copyWith(
-          articles: popularSearch.articles,
-          topics: popularSearch.topics,
+          stories: response.stories,
+          articles: const [],
+          topics: const [],
           status: SearchStatus.populated,
         ),
       );
@@ -78,13 +88,16 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       ),
     );
     try {
-      final relevantSearch = await _newsRepository.relevantSearch(
+      // Search stories from Supabase
+      final stories = await _storiesRepository.searchStories(
         term: event.searchTerm,
       );
+
       emit(
         state.copyWith(
-          articles: relevantSearch.articles,
-          topics: relevantSearch.topics,
+          stories: stories,
+          articles: const [],
+          topics: const [],
           status: SearchStatus.populated,
         ),
       );

@@ -16,6 +16,7 @@ class Story extends Equatable {
     this.authorSourceBias,
     this.aiSources,
     this.overallMetrics,
+    this.category,
   });
 
   /// Creates a [Story] from JSON.
@@ -31,6 +32,7 @@ class Story extends Equatable {
       authorSourceBias: json['author_source_bias'] as String?,
       aiSources: json['ai_sources'] as String?,
       overallMetrics: json['overall_metrics'] as String?,
+      category: json['category'] as String?,
     );
   }
 
@@ -64,6 +66,9 @@ class Story extends Equatable {
   /// Overall metrics and assessment.
   final String? overallMetrics;
 
+  /// Category of the story.
+  final String? category;
+
   /// Converts the story to JSON.
   Map<String, dynamic> toJson() {
     return {
@@ -77,6 +82,7 @@ class Story extends Equatable {
       'author_source_bias': authorSourceBias,
       'ai_sources': aiSources,
       'overall_metrics': overallMetrics,
+      'category': category,
     };
   }
 
@@ -92,5 +98,6 @@ class Story extends Equatable {
         authorSourceBias,
         aiSources,
         overallMetrics,
+        category,
       ];
 }

@@ -14,8 +14,8 @@ class CategoriesRequested extends CategoriesEvent {
 class CategorySelected extends CategoriesEvent {
   const CategorySelected({required this.category});
 
-  final Category category;
+  final Category? category;
 
   @override
-  List<Object> get props => [category];
+  List<Object?> get props => [category];
 }

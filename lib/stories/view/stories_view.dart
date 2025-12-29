@@ -1,3 +1,5 @@
+import 'package:demo_news/categories/categories.dart';
+import 'package:demo_news/stories/view/story_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -18,11 +20,17 @@ class _StoriesViewState extends State<StoriesView> {
   int _offset = 0;
   final int _limit = 10;
   bool _hasMore = true;
+  String? _currentCategory;
 
   @override
   void initState() {
     super.initState();
-    _loadStories();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final selectedCategory =
+          context.read<CategoriesBloc>().state.selectedCategory;
+      _currentCategory = selectedCategory?.name;
+      _loadStories();
+    });
   }
 
   Future<void> _loadStories() async {
@@ -39,6 +47,7 @@ class _StoriesViewState extends State<StoriesView> {
       final response = await storiesRepository.getStories(
         limit: _limit,
         offset: _offset,
+        category: _getCategoryFilter(),
       );
 
       setState(() {
@@ -53,22 +62,47 @@ class _StoriesViewState extends State<StoriesView> {
         _errorMessage = e.toString();
         _isLoading = false;
       });
-      // Error in _loadStories: $e
     }
+  }
+
+  void _onCategoryChanged(String? newCategory) {
+    if (_currentCategory != newCategory) {
+      setState(() {
+        _currentCategory = newCategory;
+        _stories.clear();
+        _offset = 0;
+        _hasMore = true;
+      });
+      _loadStories();
+    }
+  }
+
+  String? _getCategoryFilter() {
+    // If category is 'top', don't filter by category (show all)
+    if (_currentCategory == 'top') {
+      return null;
+    }
+    return _currentCategory;
   }
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async {
-        setState(() {
-          _stories.clear();
-          _offset = 0;
-          _hasMore = true;
-        });
-        await _loadStories();
+    return BlocListener<CategoriesBloc, CategoriesState>(
+      listener: (context, state) {
+        final selectedCategory = state.selectedCategory?.name;
+        _onCategoryChanged(selectedCategory);
       },
-      child: _buildBody(),
+      child: RefreshIndicator(
+        onRefresh: () async {
+          setState(() {
+            _stories.clear();
+            _offset = 0;
+            _hasMore = true;
+          });
+          await _loadStories();
+        },
+        child: _buildBody(),
+      ),
     );
   }
 
@@ -170,11 +204,19 @@ class _StoryCardState extends State<_StoryCard> {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => StoryDetailPage(story: widget.story),
+            ),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
             if (widget.story.summary != null) ...[
               Text(
                 widget.story.summary!,
@@ -246,6 +288,7 @@ class _StoryCardState extends State<_StoryCard> {
           ],
         ),
       ),
+    ),
     );
   }
 }

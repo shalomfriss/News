@@ -1,10 +1,10 @@
-import 'package:app_ui/app_ui.dart' hide Assets;
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:demo_news/feed/feed.dart';
 import 'package:demo_news/l10n/l10n.dart';
 import 'package:demo_news/search/search.dart';
+import 'package:demo_news/stories/view/story_detail_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_repository/news_repository.dart';
+import 'package:stories_repository/stories_repository.dart';
 
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key});
@@ -14,6 +14,7 @@ class SearchPage extends StatelessWidget {
     return BlocProvider<SearchBloc>(
       create: (context) => SearchBloc(
         newsRepository: context.read<NewsRepository>(),
+        storiesRepository: context.read<StoriesRepository>(),
       )..add(const SearchTermChanged()),
       child: const SearchView(),
     );
@@ -48,8 +49,6 @@ class _SearchViewState extends State<SearchView> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
-
     return BlocConsumer<SearchBloc, SearchState>(
       listener: (context, state) {
         if (state.status == SearchStatus.failure) {
@@ -72,43 +71,116 @@ class _SearchViewState extends State<SearchView> {
                   ),
                   SearchHeadlineText(
                     headerText: state.searchType == SearchType.popular
-                        ? l10n.searchPopularSearches
-                        : l10n.searchRelevantTopics,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.lg,
-                      0,
-                      AppSpacing.lg,
-                      AppSpacing.lg,
-                    ),
-                    child: Wrap(
-                      spacing: AppSpacing.sm,
-                      children: state.topics
-                          .map<Widget>(
-                            (topic) => SearchFilterChip(
-                              key: Key('searchFilterChip_$topic'),
-                              chipText: topic,
-                              onSelected: (text) => _controller.text = text,
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ),
-                  SearchHeadlineText(
-                    headerText: state.searchType == SearchType.popular
-                        ? l10n.searchPopularArticles
-                        : l10n.searchRelevantArticles,
+                        ? 'Recent Stories'
+                        : 'Search Results',
                   ),
                 ],
               ),
             ),
-            ...state.articles.map<Widget>(
-              (newsBlock) => CategoryFeedItem(block: newsBlock),
-            ),
+            if (state.status == SearchStatus.loading)
+              const SliverToBoxAdapter(
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(32),
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              )
+            else if (state.stories.isEmpty)
+              SliverToBoxAdapter(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Text(
+                      state.searchType == SearchType.relevant
+                          ? 'No stories found'
+                          : 'No stories available',
+                    ),
+                  ),
+                ),
+              )
+            else
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final story = state.stories[index];
+                    return _SearchStoryCard(story: story);
+                  },
+                  childCount: state.stories.length,
+                ),
+              ),
           ],
         );
       },
+    );
+  }
+}
+
+class _SearchStoryCard extends StatelessWidget {
+  const _SearchStoryCard({required this.story});
+
+  final Story story;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => StoryDetailPage(story: story),
+            ),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (story.summary != null)
+                Text(
+                  story.summary!,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  if (story.category != null)
+                    Chip(
+                      label: Text(
+                        story.category!.toUpperCase(),
+                        style: const TextStyle(fontSize: 10),
+                      ),
+                      visualDensity: VisualDensity.compact,
+                    ),
+                  const SizedBox(width: 8),
+                  if (story.accuracyScore != null)
+                    Chip(
+                      avatar: Icon(
+                        Icons.fact_check,
+                        size: 14,
+                        color: story.accuracyScore! > 70
+                            ? Colors.green
+                            : Colors.orange,
+                      ),
+                      label: Text(
+                        'Accuracy: ${story.accuracyScore}',
+                        style: const TextStyle(fontSize: 10),
+                      ),
+                      visualDensity: VisualDensity.compact,
+                    ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

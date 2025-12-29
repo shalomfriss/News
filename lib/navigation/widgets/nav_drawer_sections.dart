@@ -1,9 +1,10 @@
 import 'package:app_ui/app_ui.dart' show AppColors, AppSpacing;
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:demo_news/categories/categories.dart';
 import 'package:demo_news/home/home.dart';
 import 'package:demo_news/l10n/l10n.dart';
+import 'package:demo_news_api/api.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart' show toBeginningOfSentenceCase;
 
 class NavDrawerSections extends StatelessWidget {
@@ -20,20 +21,45 @@ class NavDrawerSections extends StatelessWidget {
     return Column(
       children: [
         const NavDrawerSectionsTitle(),
+        NavDrawerSectionItem(
+          key: const ValueKey('top'),
+          title: 'Top Stories',
+          selected: selectedCategory?.name == 'top',
+          onTap: () {
+            Scaffold.of(context).closeDrawer();
+            context.read<HomeCubit>().setTab(0);
+            context
+                .read<CategoriesBloc>()
+                .add(CategorySelected(category: Category.top));
+          },
+        ),
+        NavDrawerSectionItem(
+          key: const ValueKey('uncategorized'),
+          title: 'Uncategorized',
+          selected: selectedCategory == null,
+          onTap: () {
+            Scaffold.of(context).closeDrawer();
+            context.read<HomeCubit>().setTab(0);
+            context
+                .read<CategoriesBloc>()
+                .add(const CategorySelected(category: null));
+          },
+        ),
         ...[
           for (final category in categories)
-            NavDrawerSectionItem(
-              key: ValueKey(category),
-              title: toBeginningOfSentenceCase(category.name) ?? '',
-              selected: category == selectedCategory,
-              onTap: () {
-                Scaffold.of(context).closeDrawer();
-                context.read<HomeCubit>().setTab(0);
-                context
-                    .read<CategoriesBloc>()
-                    .add(CategorySelected(category: category));
-              },
-            ),
+            if (category.name != 'top')
+              NavDrawerSectionItem(
+                key: ValueKey(category),
+                title: toBeginningOfSentenceCase(category.name) ?? '',
+                selected: category == selectedCategory,
+                onTap: () {
+                  Scaffold.of(context).closeDrawer();
+                  context.read<HomeCubit>().setTab(0);
+                  context
+                      .read<CategoriesBloc>()
+                      .add(CategorySelected(category: category));
+                },
+              ),
         ],
       ],
     );

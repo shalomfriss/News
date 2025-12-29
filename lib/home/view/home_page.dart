@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:demo_news/categories/categories.dart';
 import 'package:demo_news/feed/feed.dart';
 import 'package:demo_news/home/home.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_repository/news_repository.dart';
+import 'package:stories_repository/stories_repository.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -17,6 +18,7 @@ class HomePage extends StatelessWidget {
         BlocProvider(
           create: (context) => CategoriesBloc(
             newsRepository: context.read<NewsRepository>(),
+            storiesRepository: context.read<StoriesRepository>(),
           )..add(const CategoriesRequested()),
         ),
         BlocProvider(
